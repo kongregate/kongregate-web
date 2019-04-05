@@ -56,7 +56,11 @@ The `KongregateWeb` class itself provides usage documentation for each of the fu
 
 ## Cross-Platform Support
 
-The Kongregate API is only available when building for WebGL, and will only work correctly for a game that has been uploaded to the Kongregate website. Any attempts to access the API on other platforms will behave as if the API isn
+The Kongregate API is only available when building for WebGL, and will only work correctly for a game that has been uploaded to the Kongregate website. Any attempts to access the API on other platforms will behave as if the API isn't ready (i.e. it will throw an exception).
+
+As such, your game code will still need to be smart enough to not access `KongregateWeb` on non-web platforms (or when deployed to other websites), but you won't need to wrap your code in `#if UNITY_WEBGL`.
+
+
 
 ## Additional Resources
 
