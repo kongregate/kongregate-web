@@ -60,8 +60,6 @@ The Kongregate API is only available when building for WebGL, and will only work
 
 As such, your game code will still need to be smart enough to not access `KongregateWeb` on non-web platforms (or when deployed to other websites), but you won't need to wrap your code in `#if UNITY_WEBGL`.
 
-
-
 ## Additional Resources
 
 * [Kongregate Web API Guide](https://docs.kongregate.com/docs/javascript-api)
