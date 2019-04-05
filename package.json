@@ -1,0 +1,8 @@
+{
+    "name": "com.kongregate.kongregate-web",
+    "displayName": "KongregateWeb",
+    "version": "0.1.0",
+    "unity": "2018.3",
+    "description": "Bindings to the Kongregate Web JavaScript API.",
+    "keywords": ["kongregate", "javascript", "web"]
+}
