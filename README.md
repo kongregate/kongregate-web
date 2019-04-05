@@ -23,7 +23,21 @@ KongregateWeb.LoggedIn += () =>
 
 ## Setup
 
-To use `KongregateWeb`, you'll first need to include the Kongregate JavaScript API in your build's generated `index.html` file. To do so, follow the Unity instructions for [setting up a custom WebGL template](https://docs.unity3d.com/Manual/webgl-templates.html), then add a link to `kongregate_api.js` as described in the [Kongregate JavaScript guide](https://docs.kongregate.com/docs/javascript-api#section-loading-the-api).
+To include kongregate-web as a Unity package, you'll need to be on Unity 2018.3 or later. Open `Packages/manifest.json` in your project and add "com.kongregate.kongregate-web" to the "dependencies" object:
+
+```json
+{
+  "dependencies": {
+    "com.kongregate.kongregate-web": "https://github.com/randomPoison/kongregate-web.git"
+  }
+}
+```
+
+> NOTE: You'll need to have Git installed on your development machine for Unity to be able to download the dependency. See https://git-scm.com/ for more information.
+
+> NOTE: If you're using an older version of Unity, you can still use kongregate-web by copying the contents of `Plugins` into your project's `Plugins` folder.
+
+To use kongregate-web, you'll first need to include the Kongregate JavaScript API in your build's generated `index.html` file. To do so, follow the Unity instructions for [setting up a custom WebGL template](https://docs.unity3d.com/Manual/webgl-templates.html), then add a link to `kongregate_api.js` as described in the [Kongregate JavaScript guide](https://docs.kongregate.com/docs/javascript-api#section-loading-the-api).
 
 ## Usage
 
