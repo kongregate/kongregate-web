@@ -85,10 +85,26 @@ public class KongregateWeb : MonoBehaviour
     private Action _onAdOpened;
     private Action<bool> _onAdClosed;
 
+    /// <summary>
+    /// Event broadcast when the web API becomes ready.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// If the web API is already ready, then the registered callback will be
+    /// invoked immediately.
+    /// </remarks>
     public static event Action BecameReady {
         add {
             AssertInstanceExists();
-            _instance._onBecameReady += value;
+
+            if (IsReady)
+            {
+                value?.Invoke();
+            }
+            else
+            {
+                _instance._onBecameReady += value;
+            }
         }
 
         remove {
@@ -381,6 +397,7 @@ public class KongregateWeb : MonoBehaviour
         }
 
         _onBecameReady?.Invoke();
+        _onBecameReady = null;
     }
 
     private void OnLogin(string userInfo)
