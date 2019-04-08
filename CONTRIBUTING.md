@@ -9,11 +9,13 @@ Due to the way a Unity package is structured, you can't directly open this repo 
 ```json
 {
   "dependencies": {
-    "com.kongregate.kongregate-web": "file:./kongregate-web"
+    "com.kongregate.kongregate-web": "file:kongregate-web"
   }
 }
 ```
 
 You will now be able to make changes to the local copy of the repository and test the changes in the Unity project you just setup. Doing this also allows Unity to generate meta files for any new files you add, which is necessary in order to correctly import the package into other Unity projects.
+
+Alternatively, if you already have a project setup that uses the published version of kongregate-web and want to use it to test your changes, you can clone the repo into your project's `Packages` folder without modifying your `manifest.json`. Unity will automaticaly use the local copy of the package over the one on GitHub, making it easy to test your changes. Just make sure to remove the local copy of kongregate-web once you're done to verify that you've updated your `manifest.json` to point to the new version once you're done!
 
 We appreciate pull requests, bug reports, and feature requests :heart: 
