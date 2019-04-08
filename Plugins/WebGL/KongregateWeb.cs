@@ -2,11 +2,9 @@
 #define ENABLE_KONG_API
 #endif
 
-using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using UnityEngine;
 
 public enum KredPurchaseType
 {
@@ -232,6 +230,13 @@ public class KongregateWeb : MonoBehaviour
         get {
             AssertIsReady();
             return _instance._adsAvailable;
+        }
+    }
+
+    public static bool IsAdOpen {
+        get {
+            AssertIsReady();
+            return _instance._adIsOpen;
         }
     }
 
