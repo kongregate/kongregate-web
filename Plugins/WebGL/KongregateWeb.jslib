@@ -101,7 +101,7 @@ var LibraryKongregate = {
 		var items = parseJSON(itemsJSON);
 		instance.kongregate.mtx.purchaseItems(items, function (result) {
 			if (result.success) {
-				instance.sendMessage('OnPurchaseItemsSucceeded', itemsJSON);
+				instance.sendMessage('OnPurchaseItemsSucceeded', JSON.stringify(items));
 			} else {
 				instance.sendMessage('OnPurchaseItemsFailed', itemsJSON);
 			}
