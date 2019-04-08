@@ -2,10 +2,10 @@
 #define ENABLE_KONG_API
 #endif
 
-using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public enum KredPurchaseType
@@ -93,8 +93,10 @@ public class KongregateWeb : MonoBehaviour
     /// If the web API is already ready, then the registered callback will be
     /// invoked immediately.
     /// </remarks>
-    public static event Action BecameReady {
-        add {
+    public static event Action BecameReady
+    {
+        add
+        {
             AssertInstanceExists();
 
             if (IsReady)
@@ -107,152 +109,191 @@ public class KongregateWeb : MonoBehaviour
             }
         }
 
-        remove {
+        remove
+        {
             AssertInstanceExists();
             _instance._onBecameReady -= value;
         }
     }
 
-    public static event Action LoggedIn {
-        add {
+    public static event Action LoggedIn
+    {
+        add
+        {
             AssertInstanceExists();
             _instance._onLoggedIn += value;
         }
 
-        remove {
+        remove
+        {
             AssertInstanceExists();
             _instance._onLoggedIn -= value;
         }
     }
 
-    public static event Action<string[]> PurchaseSucceeded {
-        add {
+    public static event Action<string[]> PurchaseSucceeded
+    {
+        add
+        {
             AssertInstanceExists();
             _instance._onPurchaseSucceeded += value;
         }
 
-        remove {
+        remove
+        {
             AssertInstanceExists();
             _instance._onPurchaseSucceeded -= value;
         }
     }
 
-    public static event Action<string[]> PurchaseFailed {
-        add {
+    public static event Action<string[]> PurchaseFailed
+    {
+        add
+        {
             AssertInstanceExists();
             _instance._onPurchaseFailed += value;
         }
 
-        remove {
+        remove
+        {
             AssertInstanceExists();
             _instance._onPurchaseFailed -= value;
         }
     }
 
-    public static event Action<KongregateStoreItem[]> StoreItemsReceived {
-        add {
+    public static event Action<KongregateStoreItem[]> StoreItemsReceived
+    {
+        add
+        {
             AssertInstanceExists();
             _instance._onItemsReceived += value;
         }
 
-        remove {
+        remove
+        {
             AssertInstanceExists();
             _instance._onItemsReceived -= value;
         }
     }
 
-    public static event Action<KongregateUserItem[]> UserItemsReceived {
-        add {
+    public static event Action<KongregateUserItem[]> UserItemsReceived
+    {
+        add
+        {
             AssertInstanceExists();
             _instance._onUserItemsReceived += value;
         }
 
-        remove {
+        remove
+        {
             AssertInstanceExists();
             _instance._onUserItemsReceived -= value;
         }
     }
 
-    public static event Action<bool> AdAvailabilityChanged {
-        add {
+    public static event Action<bool> AdAvailabilityChanged
+    {
+        add
+        {
             AssertInstanceExists();
             _instance._onAdAvailabilityChanged += value;
         }
 
-        remove {
+        remove
+        {
             AssertInstanceExists();
             _instance._onAdAvailabilityChanged -= value;
         }
     }
 
-    public static event Action AdOpened {
-        add {
+    public static event Action AdOpened
+    {
+        add
+        {
             AssertInstanceExists();
             _instance._onAdOpened += value;
         }
 
-        remove {
+        remove
+        {
             AssertInstanceExists();
             _instance._onAdOpened -= value;
         }
     }
 
-    public static event Action<bool> AdClosed {
-        add {
+    public static event Action<bool> AdClosed
+    {
+        add
+        {
             AssertInstanceExists();
             _instance._onAdClosed += value;
         }
 
-        remove {
+        remove
+        {
             AssertInstanceExists();
             _instance._onAdClosed -= value;
         }
     }
 
-    public static bool IsReady {
-        get {
+    public static bool IsReady
+    {
+        get
+        {
             AssertInstanceExists();
             return _instance._kongregateApiLoaded;
         }
     }
 
-    public static bool IsGuest {
-        get {
+    public static bool IsGuest
+    {
+        get
+        {
             AssertIsReady();
             return isGuest();
         }
     }
 
-    public static string Username {
-        get {
+    public static string Username
+    {
+        get
+        {
             AssertIsReady();
             return _instance._username;
         }
     }
 
-    public static int UserId {
-        get {
+    public static int UserId
+    {
+        get
+        {
             AssertIsReady();
             return _instance._userId;
         }
     }
 
-    public static string GameAuthToken {
-        get {
+    public static string GameAuthToken
+    {
+        get
+        {
             AssertIsReady();
             return _instance._gameAuthToken;
         }
     }
 
-    public static bool AdsAvailable {
-        get {
+    public static bool AdsAvailable
+    {
+        get
+        {
             AssertIsReady();
             return _instance._adsAvailable;
         }
     }
 
-    public static bool IsAdOpen {
-        get {
+    public static bool IsAdOpen
+    {
+        get
+        {
             AssertIsReady();
             return _instance._adIsOpen;
         }
