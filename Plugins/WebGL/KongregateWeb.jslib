@@ -16,6 +16,14 @@ var LibraryKongregate = {
 		return buffer;
 	},
 
+	$parseJSON: function (stringPointer) {
+		var stringValue = Pointer_stringify(stringPointer);
+		console.log('Parsing JSON input: ', stringValue);
+		if (stringValue.trim()) {
+			return JSON.parse(stringValue);
+		}
+	},
+
 	initKongregateAPI: function (gameObjectName) {
 		// Save the name of the Unity GameObject that we will send messages to.
 		instance.gameObjectName = Pointer_stringify(gameObjectName);
@@ -90,7 +98,7 @@ var LibraryKongregate = {
 	},
 
 	purchaseItems: function (itemsJSON) {
-		var items = JSON.parse(Pointer_stringify(itemsJSON));
+		var items = parseJSON(itemsJSON);
 		instance.kongregate.mtx.purchaseItems(items, function (result) {
 			if (result.success) {
 				instance.sendMessage('OnPurchaseItemsSucceeded', itemsJSON);
@@ -101,8 +109,7 @@ var LibraryKongregate = {
 	},
 
 	requestItemList: function (tagsJSON) {
-		// TODO: Do we need to explicitly handle if `tagsJSON` is null?
-		var tags = JSON.parse(Pointer_stringify(tagsJSON));
+		var tags = parseJSON(tagsJSON);
 		instance.kongregate.mtx.requestItemList(tags, function (result) {
 			if (result.success) {
 				instance.sendMessage('OnItemList', JSON.stringify(result.data));
@@ -139,4 +146,5 @@ var LibraryKongregate = {
 
 autoAddDeps(LibraryKongregate, '$instance');
 autoAddDeps(LibraryKongregate, '$stringToBuffer');
+autoAddDeps(LibraryKongregate, '$parseJSON');
 mergeInto(LibraryManager.library, LibraryKongregate);
