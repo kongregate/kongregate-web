@@ -405,7 +405,6 @@ public class KongregateWeb : MonoBehaviour
 	#endregion
 
 	#region Callbacks from JS
-#if ENABLE_KONG_API
 	private void OnInitSucceeded()
 	{
 		_kongregateApiLoaded = true;
@@ -470,7 +469,6 @@ public class KongregateWeb : MonoBehaviour
 		_adIsOpen = false;
 		_onAdClosed?.Invoke(isCompleted);
 	}
-#endif
 	#endregion
 
 	#region JS Function Declarations
@@ -490,6 +488,11 @@ public class KongregateWeb : MonoBehaviour
 
 	[DllImport("__Internal")]
 	private static extern string getGameAuthToken();
+#else
+	private static bool isGuest() { return true; }
+	private static int getUserId() { return 0; }
+	private static string getUsername() { return null; }
+	private static string getGameAuthToken() { return null; }
 #endif
 
 	[DllImport("__Internal")]
