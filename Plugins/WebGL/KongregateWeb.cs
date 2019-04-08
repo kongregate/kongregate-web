@@ -2,9 +2,11 @@
 #define ENABLE_KONG_API
 #endif
 
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using UnityEngine;
 
 public enum KredPurchaseType
 {
