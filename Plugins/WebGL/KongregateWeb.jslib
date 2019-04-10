@@ -103,7 +103,7 @@ var LibraryKongregate = {
 			if (result.success) {
 				instance.sendMessage('OnPurchaseItemsSucceeded', JSON.stringify(items));
 			} else {
-				instance.sendMessage('OnPurchaseItemsFailed', Pointer_stringify(itemsJSON));
+				instance.sendMessage('OnPurchaseItemsFailed', JSON.stringify(items));
 			}
 		});
 	},
