@@ -37,11 +37,11 @@ var LibraryKongregate = {
 			});
 
 			instance.kongregate.mtx.addEventListener('adsAvailable', function () {
-				instance.sendMessage('OnAdsAvailable', true);
+				instance.sendMessage('OnAdsAvailable', 1);
 			});
 
 			instance.kongregate.mtx.addEventListener('adsUnavailable', function () {
-				instance.sendMessage('OnAdsAvailable', false);
+				instance.sendMessage('OnAdsAvailable', 0);
 			});
 
 			instance.kongregate.mtx.addEventListener('adOpened', function () {

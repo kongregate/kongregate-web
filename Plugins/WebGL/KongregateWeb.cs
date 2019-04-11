@@ -474,10 +474,10 @@ public class KongregateWeb : MonoBehaviour
         _onUserItemsReceived?.Invoke(items);
     }
 
-    private void OnAdsAvailable(bool adsAvailable)
+    private void OnAdsAvailable(int adsAvailable)
     {
-        _adsAvailable = adsAvailable;
-        _onAdAvailabilityChanged?.Invoke(adsAvailable);
+        _adsAvailable = adsAvailable != 0;
+        _onAdAvailabilityChanged?.Invoke(_adsAvailable);
     }
 
     private void OnAdOpened()
