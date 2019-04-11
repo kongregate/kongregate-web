@@ -494,11 +494,11 @@ public class KongregateWeb : MonoBehaviour
     #endregion
 
     #region JS Function Declarations
-    [DllImport("__Internal")]
-    [Conditional("ENABLE_KONG_API")]
-    private static extern void initKongregateAPI(string gameObjectName);
 
 #if ENABLE_KONG_API
+    [DllImport("__Internal")]
+    private static extern void initKongregateAPI(string gameObjectName);
+
     [DllImport("__Internal")]
     private static extern bool isGuest();
 
@@ -510,51 +510,53 @@ public class KongregateWeb : MonoBehaviour
 
     [DllImport("__Internal")]
     private static extern string getGameAuthToken();
+
+    [DllImport("__Internal")]
+    private static extern void privateMessage(string message);
+
+    [DllImport("__Internal")]
+    private static extern void resizeGame(int width, int height);
+
+    [DllImport("__Internal")]
+    private static extern void showRegistrationBox();
+
+    [DllImport("__Internal")]
+    private static extern void showKredPurchaseDialog(string type);
+
+    [DllImport("__Internal")]
+    private static extern void purchaseItems(string itemJSON);
+
+    [DllImport("__Internal")]
+    private static extern void requestItemList(string tagsJSON);
+
+    [DllImport("__Internal")]
+    private static extern void requestUserItemList(string username);
+
+    [DllImport("__Internal")]
+    private static extern void initializeIncentivizedAds();
+
+    [DllImport("__Internal")]
+    private static extern void showIncentivizedAd();
+
+    [DllImport("__Internal")]
+    private static extern void submitStats(string statisticName, int value);
 #else
+    private static void initKongregateAPI (string gameObjectName) { }
     private static bool isGuest() { return true; }
     private static int getUserId() { return 0; }
     private static string getUsername() { return null; }
     private static string getGameAuthToken() { return null; }
+    private static void privateMessage (string message) { }
+    private static void resizeGame (int width, int height) { }
+    private static void showRegistrationBox () { }
+    private static void showKredPurchaseDialog (string type) { }
+    private static void purchaseItems (string itemJSON) { }
+    private static void requestItemList (string tagsJSON) { }
+    private static void requestUserItemList (string username) { }
+    private static void initializeIncentivizedAds () { }
+    private static void showIncentivizedAd () { }
+    private static void submitStats (string statisticName, int value) { }
 #endif
 
-    [DllImport("__Internal")]
-    [Conditional("ENABLE_KONG_API")]
-    private static extern void privateMessage(string message);
-
-    [DllImport("__Internal")]
-    [Conditional("ENABLE_KONG_API")]
-    private static extern void resizeGame(int width, int height);
-
-    [DllImport("__Internal")]
-    [Conditional("ENABLE_KONG_API")]
-    private static extern void showRegistrationBox();
-
-    [DllImport("__Internal")]
-    [Conditional("ENABLE_KONG_API")]
-    private static extern void showKredPurchaseDialog(string type);
-
-    [DllImport("__Internal")]
-    [Conditional("ENABLE_KONG_API")]
-    private static extern void purchaseItems(string itemJSON);
-
-    [DllImport("__Internal")]
-    [Conditional("ENABLE_KONG_API")]
-    private static extern void requestItemList(string tagsJSON);
-
-    [DllImport("__Internal")]
-    [Conditional("ENABLE_KONG_API")]
-    private static extern void requestUserItemList(string username);
-
-    [DllImport("__Internal")]
-    [Conditional("ENABLE_KONG_API")]
-    private static extern void initializeIncentivizedAds();
-
-    [DllImport("__Internal")]
-    [Conditional("ENABLE_KONG_API")]
-    private static extern void showIncentivizedAd();
-
-    [DllImport("__Internal")]
-    [Conditional("ENABLE_KONG_API")]
-    private static extern void submitStats(string statisticName, int value);
     #endregion
 }
