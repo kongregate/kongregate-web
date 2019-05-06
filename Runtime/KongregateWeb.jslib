@@ -18,7 +18,6 @@ var LibraryKongregate = {
 
 	$parseJSON: function (stringPointer) {
 		var stringValue = Pointer_stringify(stringPointer);
-		console.log('Parsing JSON input: ', stringValue);
 		if (stringValue.trim()) {
 			return JSON.parse(stringValue);
 		}
