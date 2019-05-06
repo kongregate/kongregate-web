@@ -486,10 +486,10 @@ public class KongregateWeb : MonoBehaviour
         _onAdOpened?.Invoke();
     }
 
-    private void OnAdClosed(bool isCompleted)
+    private void OnAdClosed(int completed)
     {
         _adIsOpen = false;
-        _onAdClosed?.Invoke(isCompleted);
+        _onAdClosed?.Invoke(completed != 0);
     }
     #endregion
 

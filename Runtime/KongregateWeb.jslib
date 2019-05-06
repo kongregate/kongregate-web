@@ -48,11 +48,11 @@ var LibraryKongregate = {
 			});
 
 			instance.kongregate.mtx.addEventListener('adCompleted', function () {
-				instance.sendMessage('OnAdCompleted');
+				instance.sendMessage('OnAdClosed', 1);
 			});
 
 			instance.kongregate.mtx.addEventListener('adAbandoned', function () {
-				instance.sendMessage('OnAdAbandoned');
+				instance.sendMessage('OnAdClosed', 0);
 			});
 
 			// Notify the game that the Kongregate API is ready.
