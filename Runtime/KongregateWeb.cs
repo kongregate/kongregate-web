@@ -1,4 +1,4 @@
-﻿#if UNITY_WEBGL && !UNITY_EDITOR
+﻿#if UNITY_WEBGL && !UNITY_EDITOR && !DISABLE_KONGREGATE_API
 #define ENABLE_KONG_API
 #endif
 
@@ -544,8 +544,8 @@ public class KongregateWeb : MonoBehaviour
     private static void initKongregateAPI (string gameObjectName) { }
     private static bool isGuest() { return true; }
     private static int getUserId() { return 0; }
-    private static string getUsername() { return null; }
-    private static string getGameAuthToken() { return null; }
+    private static string getUsername() { return "Guest"; }
+    private static string getGameAuthToken() { return "Guest_Game_Auth_Token"; }
     private static void privateMessage (string message) { }
     private static void resizeGame (int width, int height) { }
     private static void showRegistrationBox () { }
