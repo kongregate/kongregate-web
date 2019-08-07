@@ -65,10 +65,15 @@ public class KongregateUserItem
 [DisallowMultipleComponent]
 public class KongregateWeb : MonoBehaviour
 {
-    private static KongregateWeb _instance;
+    public enum ApiStatus
+    {
+        Uninitialized,
+        Unavailable,
+        Ready
+    }
 
-    private bool _kongregateApiLoaded = false;
-    private bool _kongregateApiAvailable = true;
+    private static KongregateWeb _instance;
+    private ApiStatus _status = ApiStatus.Uninitialized;
     private string _username;
     private int _userId;
     private string _gameAuthToken;
@@ -237,12 +242,12 @@ public class KongregateWeb : MonoBehaviour
         }
     }
 
-    public static bool IsKongregateAPIAvailable
+    public static ApiStatus Status
     {
         get
         {
             AssertInstanceExists();
-            return _instance._kongregateApiAvailable;
+            return _instance._status;
         }
     }
 
@@ -251,7 +256,7 @@ public class KongregateWeb : MonoBehaviour
         get
         {
             AssertInstanceExists();
-            return _instance._kongregateApiLoaded;
+            return _instance._status == ApiStatus.Ready;
         }
     }
 
@@ -428,7 +433,7 @@ public class KongregateWeb : MonoBehaviour
     {
         AssertInstanceExists();
 
-        if (!_instance._kongregateApiLoaded || !_instance._kongregateApiAvailable)
+        if (_instance._status != ApiStatus.Ready)
         {
             throw new Exception($"Do not call any methods on {typeof(KongregateWeb).Name} until the Kongregate web API has finished loading");
         }
@@ -438,7 +443,7 @@ public class KongregateWeb : MonoBehaviour
     #region Callbacks from JS
     private void OnInitSucceeded()
     {
-        _kongregateApiLoaded = true;
+        _status = ApiStatus.Ready;
 
         if (!isGuest())
         {
@@ -453,7 +458,7 @@ public class KongregateWeb : MonoBehaviour
 
     private void OnInitFailed()
     {
-        _kongregateApiAvailable = false;
+        _status = ApiStatus.Unavailable;
     }
 
     private void OnLogin(string userInfo)
