@@ -68,6 +68,7 @@ public class KongregateWeb : MonoBehaviour
     private static KongregateWeb _instance;
 
     private bool _kongregateApiLoaded = false;
+    private bool _kongregateApiAvailable = true;
     private string _username;
     private int _userId;
     private string _gameAuthToken;
@@ -84,11 +85,6 @@ public class KongregateWeb : MonoBehaviour
     private Action<bool> _onAdAvailabilityChanged;
     private Action _onAdOpened;
     private Action<bool> _onAdClosed;
-
-    public static bool IsKongregateAPIAvailable()
-    {
-        return isKongregateAPIAvailable();
-    }
 
     /// <summary>
     /// Event broadcast when the web API becomes ready.
@@ -238,6 +234,15 @@ public class KongregateWeb : MonoBehaviour
         {
             AssertInstanceExists();
             _instance._onAdClosed -= value;
+        }
+    }
+
+    public static bool IsKongregateAPIAvailable
+    {
+        get
+        {
+            AssertInstanceExists();
+            return _instance._kongregateApiAvailable;
         }
     }
 
@@ -423,7 +428,7 @@ public class KongregateWeb : MonoBehaviour
     {
         AssertInstanceExists();
 
-        if (!_instance._kongregateApiLoaded && IsKongregateAPIAvailable())
+        if (!_instance._kongregateApiLoaded && IsKongregateAPIAvailable)
         {
             throw new Exception($"Do not call any methods on {typeof(KongregateWeb).Name} until the Kongregate web API has finished loading");
         }
@@ -444,6 +449,11 @@ public class KongregateWeb : MonoBehaviour
 
         _onBecameReady?.Invoke();
         _onBecameReady = null;
+    }
+
+    private void OnInitFailed()
+    {
+        _kongregateApiAvailable = false;
     }
 
     private void OnLogin(string userInfo)
@@ -502,9 +512,6 @@ public class KongregateWeb : MonoBehaviour
 
 #if ENABLE_KONG_API
     [DllImport("__Internal")]
-    private static extern bool isKongregateAPIAvailable();
-
-    [DllImport("__Internal")]
     private static extern void initKongregateAPI(string gameObjectName);
 
     [DllImport("__Internal")]
@@ -549,7 +556,6 @@ public class KongregateWeb : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void submitStats(string statisticName, int value);
 #else
-    private static bool isKongregateAPIAvailable() { return false; }
     private static void initKongregateAPI (string gameObjectName) { }
     private static bool isGuest() { return true; }
     private static int getUserId() { return 0; }
