@@ -71,7 +71,6 @@ var LibraryKongregate = {
 
 	getUserId: function () {
 		return instance.kongregate.services.getUserId();
- 
 	},
 
 	getUsername: function () {
