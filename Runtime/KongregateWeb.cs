@@ -65,9 +65,15 @@ public class KongregateUserItem
 [DisallowMultipleComponent]
 public class KongregateWeb : MonoBehaviour
 {
-    private static KongregateWeb _instance;
+    public enum ApiStatus
+    {
+        Uninitialized,
+        Unavailable,
+        Ready
+    }
 
-    private bool _kongregateApiLoaded = false;
+    private static KongregateWeb _instance;
+    private ApiStatus _status = ApiStatus.Uninitialized;
     private string _username;
     private int _userId;
     private string _gameAuthToken;
@@ -236,12 +242,21 @@ public class KongregateWeb : MonoBehaviour
         }
     }
 
+    public static ApiStatus Status
+    {
+        get
+        {
+            AssertInstanceExists();
+            return _instance._status;
+        }
+    }
+
     public static bool IsReady
     {
         get
         {
             AssertInstanceExists();
-            return _instance._kongregateApiLoaded;
+            return _instance._status == ApiStatus.Ready;
         }
     }
 
@@ -418,7 +433,7 @@ public class KongregateWeb : MonoBehaviour
     {
         AssertInstanceExists();
 
-        if (!_instance._kongregateApiLoaded)
+        if (_instance._status != ApiStatus.Ready)
         {
             throw new Exception($"Do not call any methods on {typeof(KongregateWeb).Name} until the Kongregate web API has finished loading");
         }
@@ -428,7 +443,7 @@ public class KongregateWeb : MonoBehaviour
     #region Callbacks from JS
     private void OnInitSucceeded()
     {
-        _kongregateApiLoaded = true;
+        _status = ApiStatus.Ready;
 
         if (!isGuest())
         {
@@ -439,6 +454,11 @@ public class KongregateWeb : MonoBehaviour
 
         _onBecameReady?.Invoke();
         _onBecameReady = null;
+    }
+
+    private void OnInitFailed()
+    {
+        _status = ApiStatus.Unavailable;
     }
 
     private void OnLogin(string userInfo)
@@ -541,7 +561,7 @@ public class KongregateWeb : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void submitStats(string statisticName, int value);
 #else
-    private static void initKongregateAPI (string gameObjectName) { }
+    private static void initKongregateAPI (string gameObjectName) { _instance._status = ApiStatus.Unavailable; }
     private static bool isGuest() { return true; }
     private static int getUserId() { return 0; }
     private static string getUsername() { return null; }

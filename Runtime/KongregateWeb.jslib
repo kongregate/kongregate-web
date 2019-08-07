@@ -27,6 +27,11 @@ var LibraryKongregate = {
 		// Save the name of the Unity GameObject that we will send messages to.
 		instance.gameObjectName = Pointer_stringify(gameObjectName);
 
+		if (typeof kongregateAPI === 'undefined' || kongregateAPI === null) {
+			instance.sendMessage('OnInitFailed');
+			return;
+		}
+
 		kongregateAPI.loadAPI(function () {
 			instance.kongregate = kongregateAPI.getAPI();
 
