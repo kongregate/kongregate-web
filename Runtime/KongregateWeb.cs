@@ -561,7 +561,7 @@ public class KongregateWeb : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void submitStats(string statisticName, int value);
 #else
-    private static void initKongregateAPI (string gameObjectName) { }
+    private static void initKongregateAPI (string gameObjectName) { _instance._status = ApiStatus.Unavailable; }
     private static bool isGuest() { return true; }
     private static int getUserId() { return 0; }
     private static string getUsername() { return null; }
