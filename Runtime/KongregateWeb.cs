@@ -428,7 +428,7 @@ public class KongregateWeb : MonoBehaviour
     {
         AssertInstanceExists();
 
-        if (!_instance._kongregateApiLoaded && IsKongregateAPIAvailable)
+        if (!_instance._kongregateApiLoaded || !_instance._kongregateApiAvailable)
         {
             throw new Exception($"Do not call any methods on {typeof(KongregateWeb).Name} until the Kongregate web API has finished loading");
         }
