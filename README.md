@@ -58,9 +58,7 @@ The `KongregateWeb` class itself provides usage documentation for each of the fu
 
 ## Cross-Platform Support
 
-The Kongregate API is only available when building for WebGL, and will only work correctly for a game that has been uploaded to the Kongregate website. Any attempts to access the API on other platforms will behave as if the API isn't ready (i.e. it will throw an exception).
-
-As such, your game code will still need to be smart enough to not access `KongregateWeb` on non-web platforms (or when deployed to other websites), but you won't need to wrap your code in `#if UNITY_WEBGL`.
+The Kongregate API is only available when building for WebGL, and will only work correctly for a game that has been uploaded to the Kongregate website. When deploying your game to another website, or when testing builds locally, you can use `KongregateWeb.Status` to check the availability of the Kongregate JavaScript API. If you have not yet initialized the web API (by creating the `KongregateWeb` instance) it will return `ApiStatus.Uninitialized`. Once you have initialized the API, it will return `ApiStatus.IsReady` if the JavaScript API is present, or `ApiStatus.Unavailable` if initialization failed. `KongregateWeb.Ready` will also return `false` if the API is unavailable.
 
 ## Additional Resources
 
