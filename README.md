@@ -28,7 +28,7 @@ To include kongregate-web as a Unity package, you'll need to be on Unity 2018.3 
 ```json
 {
   "dependencies": {
-    "com.kongregate.kongregate-web": "https://github.com/randomPoison/kongregate-web.git"
+    "com.kongregate.kongregate-web": "https://github.com/kongregate/kongregate-web.git"
   }
 }
 ```
