@@ -8,514 +8,475 @@ using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using UnityEngine;
 
-public enum KredPurchaseType
+namespace Kongregate.Web
 {
-    Default,
-    Offers,
-    Mobile,
-}
-
-public class KongregateStoreItem
-{
-    [JsonProperty("id")]
-    public readonly int Id;
-
-    [JsonProperty("identifier")]
-    public readonly string Identifier;
-
-    [JsonProperty("name")]
-    public readonly string Name;
-
-    [JsonProperty("description")]
-    public readonly string Description;
-
-    [JsonProperty("price")]
-    public readonly int Price;
-
-    [JsonProperty("tags")]
-    public readonly string[] Tags;
-
-    [JsonProperty("image_url")]
-    public readonly string ImageUrl;
-}
-
-public class KongregateUserItem
-{
-    [JsonProperty("id")]
-    public readonly int Id;
-
-    [JsonProperty("identifier")]
-    public readonly string Identifier;
-
-    [JsonProperty("data")]
-    public readonly string Data;
-
-    [JsonProperty("remaining_uses")]
-    public readonly int RemainingUses;
-}
-
-/// <summary>
-/// Interface to the Kongregate web API.
-/// </summary>
-///
-/// <remarks>
-/// The bindings to the JavaScript API are defined in KongregateWeb.jslib, which
-/// must be included in the project for this class to work.
-/// </remarks>
-[DisallowMultipleComponent]
-public class KongregateWeb : MonoBehaviour
-{
-    public enum ApiStatus
-    {
-        Uninitialized,
-        Unavailable,
-        Ready
-    }
-
-    private static KongregateWeb _instance;
-    private ApiStatus _status = ApiStatus.Uninitialized;
-    private string _username;
-    private int _userId;
-    private string _gameAuthToken;
-
-    private bool _adsAvailable = false;
-    private bool _adIsOpen = false;
-
-    private Action _onBecameReady;
-    private Action _onLoggedIn;
-    private Action<string[]> _onPurchaseSucceeded;
-    private Action<string[]> _onPurchaseFailed;
-    private Action<KongregateStoreItem[]> _onItemsReceived;
-    private Action<KongregateUserItem[]> _onUserItemsReceived;
-    private Action<bool> _onAdAvailabilityChanged;
-    private Action _onAdOpened;
-    private Action<bool> _onAdClosed;
-
     /// <summary>
-    /// Event broadcast when the web API becomes ready.
+    /// Interface to the Kongregate web API.
     /// </summary>
     ///
     /// <remarks>
-    /// If the web API is already ready, then the registered callback will be
-    /// invoked immediately.
+    /// The bindings to the JavaScript API are defined in KongregateWeb.jslib, which
+    /// must be included in the project for this class to work.
     /// </remarks>
-    public static event Action BecameReady
+    [DisallowMultipleComponent]
+    public class KongregateWeb : MonoBehaviour
     {
-        add
+        public enum ApiStatus
         {
-            AssertInstanceExists();
+            Uninitialized,
+            Unavailable,
+            Ready
+        }
 
-            if (IsReady)
+        private static KongregateWeb _instance;
+        private ApiStatus _status = ApiStatus.Uninitialized;
+        private string _username;
+        private int _userId;
+        private string _gameAuthToken;
+
+        private bool _adsAvailable = false;
+        private bool _adIsOpen = false;
+
+        private Action _onBecameReady;
+        private Action _onLoggedIn;
+        private Action<string[]> _onPurchaseSucceeded;
+        private Action<string[]> _onPurchaseFailed;
+        private Action<KongregateStoreItem[]> _onItemsReceived;
+        private Action<KongregateUserItem[]> _onUserItemsReceived;
+        private Action<bool> _onAdAvailabilityChanged;
+        private Action _onAdOpened;
+        private Action<bool> _onAdClosed;
+
+        /// <summary>
+        /// Event broadcast when the web API becomes ready.
+        /// </summary>
+        ///
+        /// <remarks>
+        /// If the web API is already ready, then the registered callback will be
+        /// invoked immediately.
+        /// </remarks>
+        public static event Action BecameReady
+        {
+            add
             {
-                value?.Invoke();
+                AssertInstanceExists();
+
+                if (IsReady)
+                {
+                    value?.Invoke();
+                }
+                else
+                {
+                    _instance._onBecameReady += value;
+                }
             }
-            else
+
+            remove
             {
-                _instance._onBecameReady += value;
+                AssertInstanceExists();
+                _instance._onBecameReady -= value;
             }
         }
 
-        remove
+        public static event Action LoggedIn
         {
-            AssertInstanceExists();
-            _instance._onBecameReady -= value;
-        }
-    }
+            add
+            {
+                AssertInstanceExists();
+                _instance._onLoggedIn += value;
+            }
 
-    public static event Action LoggedIn
-    {
-        add
-        {
-            AssertInstanceExists();
-            _instance._onLoggedIn += value;
-        }
-
-        remove
-        {
-            AssertInstanceExists();
-            _instance._onLoggedIn -= value;
-        }
-    }
-
-    public static event Action<string[]> PurchaseSucceeded
-    {
-        add
-        {
-            AssertInstanceExists();
-            _instance._onPurchaseSucceeded += value;
+            remove
+            {
+                AssertInstanceExists();
+                _instance._onLoggedIn -= value;
+            }
         }
 
-        remove
+        public static event Action<string[]> PurchaseSucceeded
         {
-            AssertInstanceExists();
-            _instance._onPurchaseSucceeded -= value;
-        }
-    }
+            add
+            {
+                AssertInstanceExists();
+                _instance._onPurchaseSucceeded += value;
+            }
 
-    public static event Action<string[]> PurchaseFailed
-    {
-        add
-        {
-            AssertInstanceExists();
-            _instance._onPurchaseFailed += value;
-        }
-
-        remove
-        {
-            AssertInstanceExists();
-            _instance._onPurchaseFailed -= value;
-        }
-    }
-
-    public static event Action<KongregateStoreItem[]> StoreItemsReceived
-    {
-        add
-        {
-            AssertInstanceExists();
-            _instance._onItemsReceived += value;
+            remove
+            {
+                AssertInstanceExists();
+                _instance._onPurchaseSucceeded -= value;
+            }
         }
 
-        remove
+        public static event Action<string[]> PurchaseFailed
         {
-            AssertInstanceExists();
-            _instance._onItemsReceived -= value;
-        }
-    }
+            add
+            {
+                AssertInstanceExists();
+                _instance._onPurchaseFailed += value;
+            }
 
-    public static event Action<KongregateUserItem[]> UserItemsReceived
-    {
-        add
-        {
-            AssertInstanceExists();
-            _instance._onUserItemsReceived += value;
-        }
-
-        remove
-        {
-            AssertInstanceExists();
-            _instance._onUserItemsReceived -= value;
-        }
-    }
-
-    public static event Action<bool> AdAvailabilityChanged
-    {
-        add
-        {
-            AssertInstanceExists();
-            _instance._onAdAvailabilityChanged += value;
+            remove
+            {
+                AssertInstanceExists();
+                _instance._onPurchaseFailed -= value;
+            }
         }
 
-        remove
+        public static event Action<KongregateStoreItem[]> StoreItemsReceived
         {
-            AssertInstanceExists();
-            _instance._onAdAvailabilityChanged -= value;
-        }
-    }
+            add
+            {
+                AssertInstanceExists();
+                _instance._onItemsReceived += value;
+            }
 
-    public static event Action AdOpened
-    {
-        add
-        {
-            AssertInstanceExists();
-            _instance._onAdOpened += value;
-        }
-
-        remove
-        {
-            AssertInstanceExists();
-            _instance._onAdOpened -= value;
-        }
-    }
-
-    public static event Action<bool> AdClosed
-    {
-        add
-        {
-            AssertInstanceExists();
-            _instance._onAdClosed += value;
+            remove
+            {
+                AssertInstanceExists();
+                _instance._onItemsReceived -= value;
+            }
         }
 
-        remove
+        public static event Action<KongregateUserItem[]> UserItemsReceived
         {
-            AssertInstanceExists();
-            _instance._onAdClosed -= value;
-        }
-    }
+            add
+            {
+                AssertInstanceExists();
+                _instance._onUserItemsReceived += value;
+            }
 
-    public static ApiStatus Status
-    {
-        get
+            remove
+            {
+                AssertInstanceExists();
+                _instance._onUserItemsReceived -= value;
+            }
+        }
+
+        public static event Action<bool> AdAvailabilityChanged
         {
-            AssertInstanceExists();
-            return _instance._status;
-        }
-    }
+            add
+            {
+                AssertInstanceExists();
+                _instance._onAdAvailabilityChanged += value;
+            }
 
-    public static bool IsReady
-    {
-        get
+            remove
+            {
+                AssertInstanceExists();
+                _instance._onAdAvailabilityChanged -= value;
+            }
+        }
+
+        public static event Action AdOpened
         {
-            AssertInstanceExists();
-            return _instance._status == ApiStatus.Ready;
-        }
-    }
+            add
+            {
+                AssertInstanceExists();
+                _instance._onAdOpened += value;
+            }
 
-    public static bool IsGuest
-    {
-        get
+            remove
+            {
+                AssertInstanceExists();
+                _instance._onAdOpened -= value;
+            }
+        }
+
+        public static event Action<bool> AdClosed
+        {
+            add
+            {
+                AssertInstanceExists();
+                _instance._onAdClosed += value;
+            }
+
+            remove
+            {
+                AssertInstanceExists();
+                _instance._onAdClosed -= value;
+            }
+        }
+
+        public static ApiStatus Status
+        {
+            get
+            {
+                AssertInstanceExists();
+                return _instance._status;
+            }
+        }
+
+        public static bool IsReady
+        {
+            get
+            {
+                AssertInstanceExists();
+                return _instance._status == ApiStatus.Ready;
+            }
+        }
+
+        public static bool IsGuest
+        {
+            get
+            {
+                AssertIsReady();
+                return isGuest();
+            }
+        }
+
+        public static string Username
+        {
+            get
+            {
+                AssertIsReady();
+                return _instance._username;
+            }
+        }
+
+        public static int UserId
+        {
+            get
+            {
+                AssertIsReady();
+                return _instance._userId;
+            }
+        }
+
+        public static string GameAuthToken
+        {
+            get
+            {
+                AssertIsReady();
+                return _instance._gameAuthToken;
+            }
+        }
+
+        public static bool AdsAvailable
+        {
+            get
+            {
+                AssertIsReady();
+                return _instance._adsAvailable;
+            }
+        }
+
+        public static bool IsAdOpen
+        {
+            get
+            {
+                AssertIsReady();
+                return _instance._adIsOpen;
+            }
+        }
+
+        public static void PrivateMessage(string message)
         {
             AssertIsReady();
-            return isGuest();
+            privateMessage(message);
         }
-    }
 
-    public static string Username
-    {
-        get
+        public static void ResizeGame(int width, int height)
         {
             AssertIsReady();
-            return _instance._username;
+            resizeGame(width, height);
         }
-    }
 
-    public static int UserId
-    {
-        get
+        public static void ShowRegistrationBox()
         {
             AssertIsReady();
-            return _instance._userId;
+            showRegistrationBox();
         }
-    }
 
-    public static string GameAuthToken
-    {
-        get
+        public static void ShowKredPurchaseDialog(KredPurchaseType type = KredPurchaseType.Default)
         {
             AssertIsReady();
-            return _instance._gameAuthToken;
-        }
-    }
+            switch (type)
+            {
+                case KredPurchaseType.Offers:
+                    showKredPurchaseDialog("offers");
+                    break;
 
-    public static bool AdsAvailable
-    {
-        get
+                case KredPurchaseType.Mobile:
+                    showKredPurchaseDialog("mobile");
+                    break;
+
+                default:
+                    showKredPurchaseDialog("default");
+                    break;
+            }
+        }
+
+        public static void PurchaseItems(string[] items)
         {
             AssertIsReady();
-            return _instance._adsAvailable;
+            purchaseItems(JsonConvert.SerializeObject(items));
         }
-    }
 
-    public static bool IsAdOpen
-    {
-        get
+        public static void RequestItemList(string[] tags = null)
         {
             AssertIsReady();
-            return _instance._adIsOpen;
+            requestItemList
+                (
+                 tags != null
+                     ? JsonConvert.SerializeObject(tags)
+                     : null
+                );
         }
-    }
 
-    public static void PrivateMessage(string message)
-    {
-        AssertIsReady();
-        privateMessage(message);
-    }
-
-    public static void ResizeGame(int width, int height)
-    {
-        AssertIsReady();
-        resizeGame(width, height);
-    }
-
-    public static void ShowRegistrationBox()
-    {
-        AssertIsReady();
-        showRegistrationBox();
-    }
-
-    public static void ShowKredPurchaseDialog(KredPurchaseType type = KredPurchaseType.Default)
-    {
-        AssertIsReady();
-        switch (type)
+        public static void RequestUserItemList(string username = null)
         {
-            case KredPurchaseType.Offers:
-                showKredPurchaseDialog("offers");
-                break;
-
-            case KredPurchaseType.Mobile:
-                showKredPurchaseDialog("mobile");
-                break;
-
-            default:
-                showKredPurchaseDialog("default");
-                break;
+            AssertIsReady();
+            requestUserItemList(username);
         }
-    }
 
-    public static void PurchaseItems(string[] items)
-    {
-        AssertIsReady();
-        purchaseItems(JsonConvert.SerializeObject(items));
-    }
+        public static void InitializeIncentivizedAds()
+        {
+            AssertIsReady();
+            initializeIncentivizedAds();
+        }
 
-    public static void RequestItemList(string[] tags = null)
-    {
-        AssertIsReady();
-        requestItemList(tags != null ? JsonConvert.SerializeObject(tags) : null);
-    }
+        public static void ShowIncentivizedAd()
+        {
+            AssertIsReady();
+            showIncentivizedAd();
+        }
 
-    public static void RequestUserItemList(string username = null)
-    {
-        AssertIsReady();
-        requestUserItemList(username);
-    }
-
-    public static void InitializeIncentivizedAds()
-    {
-        AssertIsReady();
-        initializeIncentivizedAds();
-    }
-
-    public static void ShowIncentivizedAd()
-    {
-        AssertIsReady();
-        showIncentivizedAd();
-    }
-
-    public static void SubmitStats(string statisticName, int value)
-    {
-        AssertIsReady();
-        submitStats(statisticName, value);
-    }
+        public static void SubmitStats(string statisticName, int value)
+        {
+            AssertIsReady();
+            submitStats(statisticName, value);
+        }
 
     #region Unity Lifecycle Methods
-    private void Awake()
-    {
-        // Only allow one instance of the API bridge.
-        if (_instance != null)
+        private void Awake()
         {
-            UnityEngine.Debug.LogWarning("Removing duplicate Kongregate API GameObject, only one may be active at a time");
-            Destroy(gameObject);
-            return;
+            // Only allow one instance of the API bridge.
+            if (_instance != null)
+            {
+                UnityEngine.Debug.LogWarning("Removing duplicate Kongregate API GameObject, only one may be active at a time");
+                Destroy(gameObject);
+                return;
+            }
+
+            // Make this object the current instance and ensure that it isn't destroyed
+            // on scene loads.
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+
+            initKongregateAPI(name);
         }
 
-        // Make this object the current instance and ensure that it isn't destroyed
-        // on scene loads.
-        _instance = this;
-        DontDestroyOnLoad(gameObject);
-
-        initKongregateAPI(name);
-    }
-
-    private void OnDestroy()
-    {
-        if (_instance == this)
+        private void OnDestroy()
         {
-            _instance = null;
+            if (_instance == this)
+            {
+                _instance = null;
+            }
         }
-    }
     #endregion
 
     #region Asserts
-    private static void AssertInstanceExists()
-    {
-        if (_instance == null)
+        private static void AssertInstanceExists()
         {
-            // Create an instance of KongregateWeb.
-            //
-            // NOTE: _instance is set the Awake() lifecycle method, which will be called
-            // automatically as part of creating the GameObject, so we do not need to set it
-            // explicitly here.
-            new GameObject("KongregateWeb", typeof(KongregateWeb));
+            if (_instance == null)
+            {
+                // Create an instance of KongregateWeb.
+                //
+                // NOTE: _instance is set the Awake() lifecycle method, which will be called
+                // automatically as part of creating the GameObject, so we do not need to set it
+                // explicitly here.
+                new GameObject("KongregateWeb", typeof(KongregateWeb));
+            }
         }
-    }
 
-    private static void AssertIsReady()
-    {
-        AssertInstanceExists();
-
-        if (_instance._status != ApiStatus.Ready)
+        private static void AssertIsReady()
         {
-            throw new Exception($"Do not call any methods on {typeof(KongregateWeb).Name} until the Kongregate web API has finished loading");
+            AssertInstanceExists();
+
+            if (_instance._status != ApiStatus.Ready)
+            {
+                throw new Exception($"Do not call any methods on {typeof(KongregateWeb).Name} until the Kongregate web API has finished loading");
+            }
         }
-    }
     #endregion
 
     #region Callbacks from JS
-    private void OnInitSucceeded()
-    {
-        _status = ApiStatus.Ready;
+        private void OnInitSucceeded()
+        {
+            _status = ApiStatus.Ready;
 
-        if (!isGuest())
+            if (!isGuest())
+            {
+                _userId = getUserId();
+                _username = getUsername();
+                _gameAuthToken = getGameAuthToken();
+            }
+
+            _onBecameReady?.Invoke();
+            _onBecameReady = null;
+        }
+
+        private void OnInitFailed()
+        {
+            _status = ApiStatus.Unavailable;
+        }
+
+        private void OnLogin(string userInfo)
         {
             _userId = getUserId();
             _username = getUsername();
             _gameAuthToken = getGameAuthToken();
+
+            _onLoggedIn?.Invoke();
         }
 
-        _onBecameReady?.Invoke();
-        _onBecameReady = null;
-    }
+        private void OnPurchaseItemsSucceeded(string itemsJSON)
+        {
+            var items = JsonConvert.DeserializeObject<string[]>(itemsJSON);
+            _onPurchaseSucceeded?.Invoke(items);
+        }
 
-    private void OnInitFailed()
-    {
-        _status = ApiStatus.Unavailable;
-    }
+        private void OnPurchaseItemsFailed(string itemsJSON)
+        {
+            var items = JsonConvert.DeserializeObject<string[]>(itemsJSON);
+            _onPurchaseFailed?.Invoke(items);
+        }
 
-    private void OnLogin(string userInfo)
-    {
-        _userId = getUserId();
-        _username = getUsername();
-        _gameAuthToken = getGameAuthToken();
+        private void OnItemList(string itemJSON)
+        {
+            var items = JsonConvert.DeserializeObject<KongregateStoreItem[]>(itemJSON);
+            _onItemsReceived?.Invoke(items);
+        }
 
-        _onLoggedIn?.Invoke();
-    }
+        private void OnUserItems(string itemJSON)
+        {
+            var items = JsonConvert.DeserializeObject<KongregateUserItem[]>(itemJSON);
+            _onUserItemsReceived?.Invoke(items);
+        }
 
-    private void OnPurchaseItemsSucceeded(string itemsJSON)
-    {
-        var items = JsonConvert.DeserializeObject<string[]>(itemsJSON);
-        _onPurchaseSucceeded?.Invoke(items);
-    }
+        private void OnAdsAvailable(int adsAvailable)
+        {
+            _adsAvailable = adsAvailable != 0;
+            _onAdAvailabilityChanged?.Invoke(_adsAvailable);
+        }
 
-    private void OnPurchaseItemsFailed(string itemsJSON)
-    {
-        var items = JsonConvert.DeserializeObject<string[]>(itemsJSON);
-        _onPurchaseFailed?.Invoke(items);
-    }
+        private void OnAdOpened()
+        {
+            _adIsOpen = true;
+            _onAdOpened?.Invoke();
+        }
 
-    private void OnItemList(string itemJSON)
-    {
-        var items = JsonConvert.DeserializeObject<KongregateStoreItem[]>(itemJSON);
-        _onItemsReceived?.Invoke(items);
-    }
-
-    private void OnUserItems(string itemJSON)
-    {
-        var items = JsonConvert.DeserializeObject<KongregateUserItem[]>(itemJSON);
-        _onUserItemsReceived?.Invoke(items);
-    }
-
-    private void OnAdsAvailable(int adsAvailable)
-    {
-        _adsAvailable = adsAvailable != 0;
-        _onAdAvailabilityChanged?.Invoke(_adsAvailable);
-    }
-
-    private void OnAdOpened()
-    {
-        _adIsOpen = true;
-        _onAdOpened?.Invoke();
-    }
-
-    private void OnAdClosed(int completed)
-    {
-        _adIsOpen = false;
-        _onAdClosed?.Invoke(completed != 0);
-    }
+        private void OnAdClosed(int completed)
+        {
+            _adIsOpen = false;
+            _onAdClosed?.Invoke(completed != 0);
+        }
     #endregion
 
     #region JS Function Declarations
 
-#if ENABLE_KONG_API
+    #if ENABLE_KONG_API
     [DllImport("__Internal")]
     private static extern void initKongregateAPI(string gameObjectName);
 
@@ -560,23 +521,45 @@ public class KongregateWeb : MonoBehaviour
 
     [DllImport("__Internal")]
     private static extern void submitStats(string statisticName, int value);
-#else
-    private static void initKongregateAPI (string gameObjectName) { _instance._status = ApiStatus.Unavailable; }
-    private static bool isGuest() { return true; }
-    private static int getUserId() { return 0; }
-    private static string getUsername() { return null; }
-    private static string getGameAuthToken() { return null; }
-    private static void privateMessage (string message) { }
-    private static void resizeGame (int width, int height) { }
-    private static void showRegistrationBox () { }
-    private static void showKredPurchaseDialog (string type) { }
-    private static void purchaseItems (string itemJSON) { }
-    private static void requestItemList (string tagsJSON) { }
-    private static void requestUserItemList (string username) { }
-    private static void initializeIncentivizedAds () { }
-    private static void showIncentivizedAd () { }
-    private static void submitStats (string statisticName, int value) { }
-#endif
+    #else
+        private static void initKongregateAPI(string gameObjectName)
+        {
+            _instance._status = ApiStatus.Unavailable;
+        }
+
+        private static bool isGuest()
+        {
+            return true;
+        }
+
+        private static int getUserId()
+        {
+            return 0;
+        }
+
+        private static string getUsername()
+        {
+            return null;
+        }
+
+        private static string getGameAuthToken()
+        {
+            return null;
+        }
+
+        private static void privateMessage(string message) { }
+        private static void resizeGame(int width, int height) { }
+        private static void showRegistrationBox() { }
+        private static void showKredPurchaseDialog(string type) { }
+        private static void purchaseItems(string itemJSON) { }
+        private static void requestItemList(string tagsJSON) { }
+        private static void requestUserItemList(string username) { }
+        private static void initializeIncentivizedAds() { }
+        private static void showIncentivizedAd() { }
+        private static void submitStats(string statisticName, int value) { }
+    #endif
 
     #endregion
+    }
+
 }
