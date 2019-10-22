@@ -316,12 +316,7 @@ namespace Kongregate.Web
         public static void RequestItemList(string[] tags = null)
         {
             AssertIsReady();
-            requestItemList
-                (
-                 tags != null
-                     ? JsonConvert.SerializeObject(tags)
-                     : null
-                );
+            requestItemList(tags != null ? JsonConvert.SerializeObject(tags) : null);
         }
 
         public static void RequestUserItemList(string username = null)
