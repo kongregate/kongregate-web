@@ -1,18 +1,10 @@
-using Newtonsoft.Json;
-
 namespace Kongregate.Web {
+    [Serializable]
     public class KongregateUserItem
     {
-        [JsonProperty("id")]
-        public readonly int Id;
-
-        [JsonProperty("identifier")]
-        public readonly string Identifier;
-
-        [JsonProperty("data")]
-        public readonly string Data;
-
-        [JsonProperty("remaining_uses")]
-        public readonly int RemainingUses;
+        public readonly int id;
+        public readonly string identifier;
+        public readonly string data;
+        public readonly int remaining_uses;
     }
 }

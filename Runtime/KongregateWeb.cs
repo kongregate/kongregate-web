@@ -5,7 +5,6 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Kongregate.Web
@@ -310,13 +309,13 @@ namespace Kongregate.Web
         public static void PurchaseItems(string[] items)
         {
             AssertIsReady();
-            purchaseItems(JsonConvert.SerializeObject(items));
+            purchaseItems(JsonUtility.ToJson(items));
         }
 
         public static void RequestItemList(string[] tags = null)
         {
             AssertIsReady();
-            requestItemList(tags != null ? JsonConvert.SerializeObject(tags) : null);
+            requestItemList(tags != null ? JsonUtility.ToJson(tags) : null);
         }
 
         public static void RequestUserItemList(string username = null)
@@ -428,25 +427,25 @@ namespace Kongregate.Web
 
         private void OnPurchaseItemsSucceeded(string itemsJSON)
         {
-            var items = JsonConvert.DeserializeObject<string[]>(itemsJSON);
+            var items = JsonUtility.FromJson<string[]>(itemsJSON);
             _onPurchaseSucceeded?.Invoke(items);
         }
 
         private void OnPurchaseItemsFailed(string itemsJSON)
         {
-            var items = JsonConvert.DeserializeObject<string[]>(itemsJSON);
+            var items = JsonUtility.FromJson<string[]>(itemsJSON);
             _onPurchaseFailed?.Invoke(items);
         }
 
         private void OnItemList(string itemJSON)
         {
-            var items = JsonConvert.DeserializeObject<KongregateStoreItem[]>(itemJSON);
+            var items = JsonUtility.FromJson<KongregateStoreItem[]>(itemJSON);
             _onItemsReceived?.Invoke(items);
         }
 
         private void OnUserItems(string itemJSON)
         {
-            var items = JsonConvert.DeserializeObject<KongregateUserItem[]>(itemJSON);
+            var items = JsonUtility.FromJson<KongregateUserItem[]>(itemJSON);
             _onUserItemsReceived?.Invoke(items);
         }
 
