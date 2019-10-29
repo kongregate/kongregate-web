@@ -1,10 +1,21 @@
 namespace Kongregate.Web {
-    [Serializable]
+[Serializable]
     public class KongregateUserItem
     {
-        public readonly int id;
-        public readonly string identifier;
-        public readonly string data;
-        public readonly int remaining_uses;
+        [SerializeField]
+        private readonly int id;
+        public readonly int Id => id;
+
+        [SerializeField]         
+        private readonly string identifier;
+        public readonly string Identifier => identifier;
+
+        [SerializeField]
+        private readonly string data;
+        public readonly string Data => data;
+
+        [SerializeField]
+        private readonly int remaining_uses;
+        public readonly int RemainingUses => remaining_uses;
     }
 }
