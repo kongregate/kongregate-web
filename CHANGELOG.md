@@ -7,14 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-* Remove dependency on Json.NET.
+### Improvements
+
+* Remove dependency on Json.NET. ([#11])
+* Add unit and integrations tests. ([#11])
 
 ### Breaking Changes
 
-* Rename `KongregateUserItem` to `UserItem`.
-* Rename `KongregateStoreItem` to `StoreItem`.
-* Changed `UserItem` and `StoreItem` to be structs instead of classes. This may require that you update logic that was checking an item against `null`.
-* Moved `ApiStatus` out of `KongregateWeb`.
+* Rename `KongregateUserItem` to `UserItem`. ([#11])
+* Rename `KongregateStoreItem` to `StoreItem`. ([#11])
+* Changed `UserItem` and `StoreItem` to be structs instead of classes. This may require that you update logic that was checking an item against `null`. ([#11])
+* Moved `ApiStatus` out of `KongregateWeb`. ([#11])
+
+[#11]: https://github.com/kongregate/kongregate-web/pull/11
 
 ## [v0.1.0] - 2019-08-21
 
