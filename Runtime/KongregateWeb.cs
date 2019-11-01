@@ -1,11 +1,14 @@
-﻿#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
 #define ENABLE_KONG_API
 #endif
 
 using System;
+using UnityEngine;
+
+#if ENABLE_KONG_API
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using UnityEngine;
+#endif
 
 namespace Kongregate.Web
 {
@@ -342,7 +345,7 @@ namespace Kongregate.Web
             submitStats(statisticName, value);
         }
 
-    #region Unity Lifecycle Methods
+#region Unity Lifecycle Methods
         private void Awake()
         {
             // Only allow one instance of the API bridge.
@@ -368,9 +371,9 @@ namespace Kongregate.Web
                 _instance = null;
             }
         }
-    #endregion
+#endregion
 
-    #region Asserts
+#region Asserts
         private static void AssertInstanceExists()
         {
             if (_instance == null)
@@ -393,9 +396,9 @@ namespace Kongregate.Web
                 throw new Exception($"Do not call any methods on {typeof(KongregateWeb).Name} until the Kongregate web API has finished loading");
             }
         }
-    #endregion
+#endregion
 
-    #region Callbacks from JS
+#region Callbacks from JS
         private void OnInitSucceeded()
         {
             _status = ApiStatus.Ready;
@@ -425,28 +428,43 @@ namespace Kongregate.Web
             _onLoggedIn?.Invoke();
         }
 
-        private void OnPurchaseItemsSucceeded(string itemsJSON)
+        private void OnPurchaseItems(string responseJson)
         {
-            var items = JsonUtility.FromJson<string[]>(itemsJSON);
-            _onPurchaseSucceeded?.Invoke(items);
-        }
-
-        private void OnPurchaseItemsFailed(string itemsJSON)
-        {
-            var items = JsonUtility.FromJson<string[]>(itemsJSON);
-            _onPurchaseFailed?.Invoke(items);
+            var response = JsonUtility.FromJson<PurchaseItemsResponse>(responseJson);
+            if (response.success)
+            {
+                _onPurchaseSucceeded?.Invoke(response.items);
+            }
+            else
+            {
+                _onPurchaseFailed?.Invoke(response.items);
+            }
         }
 
         private void OnItemList(string itemJSON)
         {
-            var items = JsonUtility.FromJson<StoreItem[]>(itemJSON);
-            _onItemsReceived?.Invoke(items);
+            var response = JsonUtility.FromJson<StoreItemListResponse>(itemJSON);
+            if (response.success)
+            {
+                _onItemsReceived?.Invoke(response.data);
+            }
+            else
+            {
+                // TODO: How should we handle an error here?
+            }
         }
 
-        private void OnUserItems(string itemJSON)
+        private void OnUserItems(string responseJson)
         {
-            var items = JsonUtility.FromJson<UserItem[]>(itemJSON);
-            _onUserItemsReceived?.Invoke(items);
+            var response = JsonUtility.FromJson<UserItemListResponse>(responseJson);
+            if (response.success)
+            {
+                _onUserItemsReceived?.Invoke(response.data);
+            }
+            else
+            {
+                // TODO: How should we handle an error here?
+            }
         }
 
         private void OnAdsAvailable(int adsAvailable)
@@ -466,11 +484,11 @@ namespace Kongregate.Web
             _adIsOpen = false;
             _onAdClosed?.Invoke(completed != 0);
         }
-    #endregion
+#endregion
 
-    #region JS Function Declarations
+#region JS Function Declarations
 
-    #if ENABLE_KONG_API
+#if ENABLE_KONG_API
     [DllImport("__Internal")]
     private static extern void initKongregateAPI(string gameObjectName);
 
@@ -515,7 +533,7 @@ namespace Kongregate.Web
 
     [DllImport("__Internal")]
     private static extern void submitStats(string statisticName, int value);
-    #else
+#else
         private static void initKongregateAPI(string gameObjectName)
         {
             _instance._status = ApiStatus.Unavailable;
@@ -551,9 +569,8 @@ namespace Kongregate.Web
         private static void initializeIncentivizedAds() { }
         private static void showIncentivizedAd() { }
         private static void submitStats(string statisticName, int value) { }
-    #endif
+#endif
 
-    #endregion
+#endregion
     }
-
 }

@@ -1,22 +1,25 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace Kongregate.Web
 {
+    /// <summary>
+    /// An item in the user's inventory.
+    /// </summary>
     [Serializable]
     public struct UserItem
     {
         [SerializeField]
-        private readonly int id;
+        private int id;
 
         [SerializeField]
-        private readonly string identifier;
+        private string identifier;
 
         [SerializeField]
-        private readonly string data;
+        private string data;
 
         [SerializeField]
-        private readonly int remaining_uses;
+        private int remaining_uses;
 
         public int Id => id;
 
@@ -25,5 +28,15 @@ namespace Kongregate.Web
         public string Data => data;
 
         public int RemainingUses => remaining_uses;
+
+        public bool IsUnlimitedUseItem => RemainingUses == 0;
+
+        public UserItem(int id, string identifier, string data, int remainingUses)
+        {
+            this.id = id;
+            this.identifier = identifier;
+            this.data = data;
+            remaining_uses = remainingUses;
+        }
     }
 }
