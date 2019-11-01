@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace Kongregate.Web
@@ -7,25 +7,25 @@ namespace Kongregate.Web
     public struct StoreItem
     {
         [SerializeField]
-        private readonly int id;
+        private int id;
 
         [SerializeField]
-        private readonly string identifier;
+        private string identifier;
 
         [SerializeField]
-        private readonly string name;
+        private string name;
 
         [SerializeField]
-        private readonly string description;
+        private string description;
 
         [SerializeField]
-        private readonly int price;
+        private int price;
 
         [SerializeField]
-        private readonly string[] tags;
+        private string[] tags;
 
         [SerializeField]
-        private readonly string image_url;
+        private string image_url;
 
         public int Id => id;
 
@@ -40,5 +40,23 @@ namespace Kongregate.Web
         public string[] Tags => tags;
 
         public string ImageUrl => image_url;
+
+        public StoreItem(
+            int id,
+            string identifier,
+            string name,
+            string description,
+            int price,
+            string[] tags,
+            string imageUrl)
+        {
+            this.id = id;
+            this.identifier = identifier;
+            this.name = name;
+            this.description = description;
+            this.price = price;
+            this.tags = tags;
+            this.image_url = imageUrl;
+        }
     }
 }
