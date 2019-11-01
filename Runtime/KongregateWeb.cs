@@ -23,14 +23,8 @@ namespace Kongregate.Web
     [DisallowMultipleComponent]
     public class KongregateWeb : MonoBehaviour
     {
-        public enum ApiStatus
-        {
-            Uninitialized,
-            Unavailable,
-            Ready
-        }
-
         private static KongregateWeb _instance;
+
         private ApiStatus _status = ApiStatus.Uninitialized;
         private string _username;
         private int _userId;
@@ -345,13 +339,13 @@ namespace Kongregate.Web
             submitStats(statisticName, value);
         }
 
-#region Unity Lifecycle Methods
+        #region Unity Lifecycle Methods
         private void Awake()
         {
             // Only allow one instance of the API bridge.
             if (_instance != null)
             {
-                UnityEngine.Debug.LogWarning("Removing duplicate Kongregate API GameObject, only one may be active at a time");
+                Debug.LogWarning("Removing duplicate Kongregate API GameObject, only one may be active at a time");
                 Destroy(gameObject);
                 return;
             }
@@ -371,9 +365,9 @@ namespace Kongregate.Web
                 _instance = null;
             }
         }
-#endregion
+        #endregion
 
-#region Asserts
+        #region Asserts
         private static void AssertInstanceExists()
         {
             if (_instance == null)
@@ -396,9 +390,9 @@ namespace Kongregate.Web
                 throw new Exception($"Do not call any methods on {typeof(KongregateWeb).Name} until the Kongregate web API has finished loading");
             }
         }
-#endregion
+        #endregion
 
-#region Callbacks from JS
+        #region Callbacks from JS
         private void OnInitSucceeded()
         {
             _status = ApiStatus.Ready;
@@ -484,9 +478,9 @@ namespace Kongregate.Web
             _adIsOpen = false;
             _onAdClosed?.Invoke(completed != 0);
         }
-#endregion
+        #endregion
 
-#region JS Function Declarations
+        #region JS Function Declarations
 
 #if ENABLE_KONG_API
     [DllImport("__Internal")]
@@ -571,6 +565,6 @@ namespace Kongregate.Web
         private static void submitStats(string statisticName, int value) { }
 #endif
 
-#endregion
+        #endregion
     }
 }
