@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Rename `KongregateUserItem` to `UserItem`.
 * Rename `KongregateStoreItem` to `StoreItem`.
 * Changed `UserItem` and `StoreItem` to be structs instead of classes. This may require that you update logic that was checking an item against `null`.
+* Moved `ApiStatus` out of `KongregateWeb`.
 
 ## [v0.1.0] - 2019-08-21
 
