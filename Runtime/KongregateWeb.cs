@@ -40,8 +40,8 @@ namespace Kongregate.Web
         private Action _onLoggedIn;
         private Action<string[]> _onPurchaseSucceeded;
         private Action<string[]> _onPurchaseFailed;
-        private Action<KongregateStoreItem[]> _onItemsReceived;
-        private Action<KongregateUserItem[]> _onUserItemsReceived;
+        private Action<StoreItem[]> _onItemsReceived;
+        private Action<UserItem[]> _onUserItemsReceived;
         private Action<bool> _onAdAvailabilityChanged;
         private Action _onAdOpened;
         private Action<bool> _onAdClosed;
@@ -122,7 +122,7 @@ namespace Kongregate.Web
             }
         }
 
-        public static event Action<KongregateStoreItem[]> StoreItemsReceived
+        public static event Action<StoreItem[]> StoreItemsReceived
         {
             add
             {
@@ -137,7 +137,7 @@ namespace Kongregate.Web
             }
         }
 
-        public static event Action<KongregateUserItem[]> UserItemsReceived
+        public static event Action<UserItem[]> UserItemsReceived
         {
             add
             {
@@ -439,13 +439,13 @@ namespace Kongregate.Web
 
         private void OnItemList(string itemJSON)
         {
-            var items = JsonUtility.FromJson<KongregateStoreItem[]>(itemJSON);
+            var items = JsonUtility.FromJson<StoreItem[]>(itemJSON);
             _onItemsReceived?.Invoke(items);
         }
 
         private void OnUserItems(string itemJSON)
         {
-            var items = JsonUtility.FromJson<KongregateUserItem[]>(itemJSON);
+            var items = JsonUtility.FromJson<UserItem[]>(itemJSON);
             _onUserItemsReceived?.Invoke(items);
         }
 
