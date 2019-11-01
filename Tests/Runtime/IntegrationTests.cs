@@ -2,6 +2,7 @@ using Kongregate.Web;
 using NUnit.Framework;
 using UnityEngine;
 
+[TestFixture]
 public class IntegrationTests
 {
     private static readonly string StoreItemJson = @"{
@@ -19,19 +20,33 @@ public class IntegrationTests
         ]
     }";
 
-    [Test]
-    public static void TestInitialization()
-    {
-        var instance = new GameObject("KongregateWeb", typeof(KongregateWeb));
+    private GameObject _kongWebInstance = null;
 
-        // When running in the editor, the API should be treated as unavailable.
-        Assert.AreEqual(ApiStatus.Unavailable, KongregateWeb.Status);
+    [SetUp]
+    public void Setup()
+    {
+        // Create a fresh instance of KongregateWeb object.
+        _kongWebInstance = new GameObject("KongregateWeb", typeof(KongregateWeb));
 
         // Simulate the JavaScript API being successfully initialized.
-        instance.SendMessage("OnInitSucceeded");
+        _kongWebInstance.SendMessage("OnInitSucceeded");
+    }
 
+    [TearDown]
+    public void TearDown()
+    {
+        GameObject.Destroy(_kongWebInstance);
+    }
+
+    [Test]
+    public void TestInitialization()
+    {
         Assert.AreEqual(ApiStatus.Ready, KongregateWeb.Status);
+    }
 
+    [Test]
+    public void TestStoreItems()
+    {
         // Simulate the flow for RequestItemsList.
         bool storeItemsReceived = false;
         KongregateWeb.StoreItemsReceived += items =>
@@ -53,9 +68,7 @@ public class IntegrationTests
         };
 
         KongregateWeb.RequestItemList();
-        instance.SendMessage("OnItemList", StoreItemJson);
+        _kongWebInstance.SendMessage("OnItemList", StoreItemJson);
         Assert.IsTrue(storeItemsReceived);
-
-        GameObject.Destroy(instance);
     }
 }
