@@ -20,6 +20,18 @@ public class IntegrationTests
         ]
     }";
 
+    private static readonly string UserItemJson = @"{
+        ""success"": true,
+        ""data"": [
+            {
+            ""id"": 123,
+            ""identifier"": ""cool_item"",
+            ""data"": ""some metadata goes here"",
+            ""remaining_uses"": 1
+            }
+        ]
+    }";
+
     private GameObject _kongWebInstance = null;
 
     [SetUp]
@@ -70,5 +82,25 @@ public class IntegrationTests
         KongregateWeb.RequestItemList();
         _kongWebInstance.SendMessage("OnItemList", StoreItemJson);
         Assert.IsTrue(storeItemsReceived);
+    }
+
+    [Test]
+    public void TestUserItems()
+    {
+        bool userItemsRecieved = false;
+        KongregateWeb.UserItemsReceived += items =>
+        {
+            userItemsRecieved = true;
+            Assert.AreEqual(
+                new UserItem[]
+                {
+                    new UserItem(123, "cool_item", "some metadata goes here", 1),
+                },
+                items);
+        };
+
+        KongregateWeb.RequestUserItemList();
+        _kongWebInstance.SendMessage("OnUserItems", UserItemJson);
+        Assert.IsTrue(userItemsRecieved);
     }
 }
