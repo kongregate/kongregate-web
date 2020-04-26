@@ -9,33 +9,35 @@ env:
 
 jobs:
   build:
-    name: Build my project ✨
+    name: Build for ${{ matrix.targetPlatform }} on version ${{ matrix.unityVersion }}
     runs-on: ubuntu-latest
-    steps:
 
-      # Checkout
+    strategy:
+      fail-fast: false
+      matrix:
+        projectPath:
+          - test-project-2018.4
+
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           lfs: true
 
-      # Cache
       - uses: actions/cache@v1.1.0
         with:
-          path: ./test-project-2018.4/Library
-          key: 2018.4-Library
+          path: ${{ matrix.projectPath }}/Library
+          key: Library-${{ matrix.projectPath }}
 
-      # Test
       - name: Run tests
         uses: webbertakken/unity-test-runner@v1.3
         with:
           unityVersion: 2018.4.11f1
-          projectPath: ./test-project-2018.4
+          projectPath: ${{ matrix.projectPath }}
 
-      # Build
       - name: Build project
         uses: webbertakken/unity-builder@v0.10
         with:
           unityVersion: 2018.4.11f1
-          projectPath: ./test-project-2018.4
+          projectPath: ${{ matrix.projectPath }}
           targetPlatform: WebGL
