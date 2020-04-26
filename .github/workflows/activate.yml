@@ -4,14 +4,20 @@ jobs:
   activation:
     name: Request manual activation file 🔑
     runs-on: ubuntu-latest
-    steps:
 
+    strategy:
+      matrix:
+        unityVersion:
+          - 2019.4.11f1
+          - 2019.3.9f1
+
+    steps:
     # Request manual activation file
     - name: Request manual activation file
       id: getManualLicenseFile
       uses: webbertakken/unity-request-manual-activation-file@v1.1
       with:
-        unityVersion: 2018.4.11f1
+        unityVersion: ${{ matrix.unityVersion }}
 
     # Upload artifact (Unity_v20XX.X.XXXX.alf)
     - name: Expose as artifact
