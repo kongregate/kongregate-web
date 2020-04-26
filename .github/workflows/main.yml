@@ -22,18 +22,20 @@ jobs:
       # Cache
       - uses: actions/cache@v1.1.0
         with:
-          path: Library
-          key: Library
+          path: test-project-2018.4/Library
+          key: 2018.4-Library
 
       # Test
       - name: Run tests
         uses: webbertakken/unity-test-runner@v1.3
         with:
           unityVersion: 2018.4.11f1
+          projectPath: test-project-2018.4
 
       # Build
       - name: Build project
         uses: webbertakken/unity-builder@v0.10
         with:
           unityVersion: 2018.4.11f1
+          projectPath: test-project-2018.4
           targetPlatform: WebGL
