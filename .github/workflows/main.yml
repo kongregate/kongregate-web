@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         projectPath:
-          - test-project-2018.4
+          - ./test-project-2018.4
 
     steps:
       - name: Checkout repository
