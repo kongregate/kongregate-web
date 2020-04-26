@@ -34,16 +34,16 @@ jobs:
       - name: Run tests
         uses: webbertakken/unity-test-runner@v1.3
         with:
-          unityVersion: ${{ matrix.unityVersion }}
           projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
         env:
           UNITY_LICENSE: ${{ secrets[matrix.unityLicense] }}
 
       - name: Build project
         uses: webbertakken/unity-builder@v0.10
         with:
-          unityVersion: ${{ matrix.unityVersion }}
           projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: WebGL
         env:
           UNITY_LICENSE: ${{ secrets[matrix.unityLicense] }}
