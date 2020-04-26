@@ -104,22 +104,18 @@ var LibraryKongregate = {
 	purchaseItems: function (itemsJSON) {
 		var items = parseJSON(itemsJSON);
 		instance.kongregate.mtx.purchaseItems(items, function (result) {
-			if (result.success) {
-				instance.sendMessage('OnPurchaseItemsSucceeded', JSON.stringify(items));
-			} else {
-				instance.sendMessage('OnPurchaseItemsFailed', JSON.stringify(items));
-			}
+			response = {
+				success: result.success,
+				items: items,
+			};
+			instance.sendMessage('OnPurchaseItems', JSON.stringify(response));
 		});
 	},
 
 	requestItemList: function (tagsJSON) {
 		var tags = parseJSON(tagsJSON);
 		instance.kongregate.mtx.requestItemList(tags, function (result) {
-			if (result.success) {
-				instance.sendMessage('OnItemList', JSON.stringify(result.data));
-			} else {
-				// TODO: What do we do if there's an error?
-			}
+			instance.sendMessage('OnItemList', JSON.stringify(result));
 		});
 	},
 
@@ -127,11 +123,7 @@ var LibraryKongregate = {
 		// TODO: Do we need to explicitly handle if `username` is null?
 		username = Pointer_stringify(username);
 		instance.kongregate.mtx.requestUserItemList(username, function (result) {
-			if (result.success) {
-				instance.sendMessage('OnUserItems', JSON.stringify(result.data));
-			} else {
-				// TODO: What do we do if there's an error?
-			}
+			instance.sendMessage('OnUserItems', JSON.stringify(result));
 		});
 	},
 

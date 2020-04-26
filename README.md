@@ -39,8 +39,6 @@ To include kongregate-web as a Unity package, you'll need to be on Unity 2018.3 
 
 To use kongregate-web, you'll first need to include the Kongregate JavaScript API in your build's generated `index.html` file. To do so, follow the Unity instructions for [setting up a custom WebGL template](https://docs.unity3d.com/Manual/webgl-templates.html), then add a link to `kongregate_api.js` as described in the [Kongregate JavaScript guide](https://docs.kongregate.com/docs/javascript-api#section-loading-the-api).
 
-> NOTE: There's an additional dependency on [Json.NET](https://www.newtonsoft.com/json) currently, which means you'll need to import it into your project in order to use kongregate-web. There is a [package on the Unity store](https://assetstore.unity.com/packages/tools/input-management/json-net-for-unity-11347) that you can use for this purpose. This dependency will be removed in a future version, see [#1](https://github.com/randomPoison/kongregate-web/issues/1).
-
 ## Usage
 
 The API is accessible through public, static methods on the `KongregateWeb` class. You never need to access the `KongregateWeb` instance directly.

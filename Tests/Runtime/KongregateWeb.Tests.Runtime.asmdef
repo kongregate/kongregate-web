@@ -1,0 +1,16 @@
+{
+    "name": "KongregateWeb.Tests.Runtime",
+    "references": [
+        "KongregateWeb"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": []
+}

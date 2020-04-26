@@ -1,4 +1,5 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -6,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Improvements
+
+* Remove dependency on Json.NET. ([#11])
+* Add unit and integrations tests. ([#11])
+
+### Breaking Changes
+
+* Rename `KongregateUserItem` to `UserItem`. ([#11])
+* Rename `KongregateStoreItem` to `StoreItem`. ([#11])
+* Changed `UserItem` and `StoreItem` to be structs instead of classes. This may require that you update logic that was checking an item against `null`. ([#11])
+* Moved `ApiStatus` out of `KongregateWeb`. ([#11])
+
+[#11]: https://github.com/kongregate/kongregate-web/pull/11
+
+## [v0.1.0] - 2019-08-21
+
 Initial release, adds `KongregateWeb` class, `KongregateWeb.jslib`, bindings to core parts of the Kongregate JavaScript API, and basic usage instructions.
 
-[Unreleased]: https://github.com/olivierlacan/keep-a-changelog/compare/f97322f...HEAD
+[Unreleased]: https://github.com/kongregate/kongregate-web/compare/25b53f1...master
+[v0.1.0]: https://github.com/kongregate/kongregate-web/compare/f97322f...25b53f1

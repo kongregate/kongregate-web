@@ -1,12 +1,14 @@
-﻿#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
 #define ENABLE_KONG_API
 #endif
 
 using System;
+using UnityEngine;
+
+#if ENABLE_KONG_API
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Newtonsoft.Json;
-using UnityEngine;
+#endif
 
 namespace Kongregate.Web
 {
@@ -21,14 +23,8 @@ namespace Kongregate.Web
     [DisallowMultipleComponent]
     public class KongregateWeb : MonoBehaviour
     {
-        public enum ApiStatus
-        {
-            Uninitialized,
-            Unavailable,
-            Ready
-        }
-
         private static KongregateWeb _instance;
+
         private ApiStatus _status = ApiStatus.Uninitialized;
         private string _username;
         private int _userId;
@@ -41,8 +37,8 @@ namespace Kongregate.Web
         private Action _onLoggedIn;
         private Action<string[]> _onPurchaseSucceeded;
         private Action<string[]> _onPurchaseFailed;
-        private Action<KongregateStoreItem[]> _onItemsReceived;
-        private Action<KongregateUserItem[]> _onUserItemsReceived;
+        private Action<StoreItem[]> _onItemsReceived;
+        private Action<UserItem[]> _onUserItemsReceived;
         private Action<bool> _onAdAvailabilityChanged;
         private Action _onAdOpened;
         private Action<bool> _onAdClosed;
@@ -123,7 +119,7 @@ namespace Kongregate.Web
             }
         }
 
-        public static event Action<KongregateStoreItem[]> StoreItemsReceived
+        public static event Action<StoreItem[]> StoreItemsReceived
         {
             add
             {
@@ -138,7 +134,7 @@ namespace Kongregate.Web
             }
         }
 
-        public static event Action<KongregateUserItem[]> UserItemsReceived
+        public static event Action<UserItem[]> UserItemsReceived
         {
             add
             {
@@ -310,13 +306,13 @@ namespace Kongregate.Web
         public static void PurchaseItems(string[] items)
         {
             AssertIsReady();
-            purchaseItems(JsonConvert.SerializeObject(items));
+            purchaseItems(JsonUtility.ToJson(items));
         }
 
         public static void RequestItemList(string[] tags = null)
         {
             AssertIsReady();
-            requestItemList(tags != null ? JsonConvert.SerializeObject(tags) : null);
+            requestItemList(tags != null ? JsonUtility.ToJson(tags) : null);
         }
 
         public static void RequestUserItemList(string username = null)
@@ -343,13 +339,13 @@ namespace Kongregate.Web
             submitStats(statisticName, value);
         }
 
-    #region Unity Lifecycle Methods
+        #region Unity Lifecycle Methods
         private void Awake()
         {
             // Only allow one instance of the API bridge.
             if (_instance != null)
             {
-                UnityEngine.Debug.LogWarning("Removing duplicate Kongregate API GameObject, only one may be active at a time");
+                Debug.LogWarning("Removing duplicate Kongregate API GameObject, only one may be active at a time");
                 Destroy(gameObject);
                 return;
             }
@@ -369,9 +365,9 @@ namespace Kongregate.Web
                 _instance = null;
             }
         }
-    #endregion
+        #endregion
 
-    #region Asserts
+        #region Asserts
         private static void AssertInstanceExists()
         {
             if (_instance == null)
@@ -394,9 +390,9 @@ namespace Kongregate.Web
                 throw new Exception($"Do not call any methods on {typeof(KongregateWeb).Name} until the Kongregate web API has finished loading");
             }
         }
-    #endregion
+        #endregion
 
-    #region Callbacks from JS
+        #region Callbacks from JS
         private void OnInitSucceeded()
         {
             _status = ApiStatus.Ready;
@@ -426,28 +422,43 @@ namespace Kongregate.Web
             _onLoggedIn?.Invoke();
         }
 
-        private void OnPurchaseItemsSucceeded(string itemsJSON)
+        private void OnPurchaseItems(string responseJson)
         {
-            var items = JsonConvert.DeserializeObject<string[]>(itemsJSON);
-            _onPurchaseSucceeded?.Invoke(items);
-        }
-
-        private void OnPurchaseItemsFailed(string itemsJSON)
-        {
-            var items = JsonConvert.DeserializeObject<string[]>(itemsJSON);
-            _onPurchaseFailed?.Invoke(items);
+            var response = JsonUtility.FromJson<PurchaseItemsResponse>(responseJson);
+            if (response.success)
+            {
+                _onPurchaseSucceeded?.Invoke(response.items);
+            }
+            else
+            {
+                _onPurchaseFailed?.Invoke(response.items);
+            }
         }
 
         private void OnItemList(string itemJSON)
         {
-            var items = JsonConvert.DeserializeObject<KongregateStoreItem[]>(itemJSON);
-            _onItemsReceived?.Invoke(items);
+            var response = JsonUtility.FromJson<StoreItemListResponse>(itemJSON);
+            if (response.success)
+            {
+                _onItemsReceived?.Invoke(response.data);
+            }
+            else
+            {
+                // TODO: How should we handle an error here?
+            }
         }
 
-        private void OnUserItems(string itemJSON)
+        private void OnUserItems(string responseJson)
         {
-            var items = JsonConvert.DeserializeObject<KongregateUserItem[]>(itemJSON);
-            _onUserItemsReceived?.Invoke(items);
+            var response = JsonUtility.FromJson<UserItemListResponse>(responseJson);
+            if (response.success)
+            {
+                _onUserItemsReceived?.Invoke(response.data);
+            }
+            else
+            {
+                // TODO: How should we handle an error here?
+            }
         }
 
         private void OnAdsAvailable(int adsAvailable)
@@ -467,56 +478,56 @@ namespace Kongregate.Web
             _adIsOpen = false;
             _onAdClosed?.Invoke(completed != 0);
         }
-    #endregion
+        #endregion
 
-    #region JS Function Declarations
+        #region JS Function Declarations
 
-    #if ENABLE_KONG_API
-    [DllImport("__Internal")]
-    private static extern void initKongregateAPI(string gameObjectName);
+#if ENABLE_KONG_API
+        [DllImport("__Internal")]
+        private static extern void initKongregateAPI(string gameObjectName);
 
-    [DllImport("__Internal")]
-    private static extern bool isGuest();
+        [DllImport("__Internal")]
+        private static extern bool isGuest();
 
-    [DllImport("__Internal")]
-    private static extern int getUserId();
+        [DllImport("__Internal")]
+        private static extern int getUserId();
 
-    [DllImport("__Internal")]
-    private static extern string getUsername();
+        [DllImport("__Internal")]
+        private static extern string getUsername();
 
-    [DllImport("__Internal")]
-    private static extern string getGameAuthToken();
+        [DllImport("__Internal")]
+        private static extern string getGameAuthToken();
 
-    [DllImport("__Internal")]
-    private static extern void privateMessage(string message);
+        [DllImport("__Internal")]
+        private static extern void privateMessage(string message);
 
-    [DllImport("__Internal")]
-    private static extern void resizeGame(int width, int height);
+        [DllImport("__Internal")]
+        private static extern void resizeGame(int width, int height);
 
-    [DllImport("__Internal")]
-    private static extern void showRegistrationBox();
+        [DllImport("__Internal")]
+        private static extern void showRegistrationBox();
 
-    [DllImport("__Internal")]
-    private static extern void showKredPurchaseDialog(string type);
+        [DllImport("__Internal")]
+        private static extern void showKredPurchaseDialog(string type);
 
-    [DllImport("__Internal")]
-    private static extern void purchaseItems(string itemJSON);
+        [DllImport("__Internal")]
+        private static extern void purchaseItems(string itemJSON);
 
-    [DllImport("__Internal")]
-    private static extern void requestItemList(string tagsJSON);
+        [DllImport("__Internal")]
+        private static extern void requestItemList(string tagsJSON);
 
-    [DllImport("__Internal")]
-    private static extern void requestUserItemList(string username);
+        [DllImport("__Internal")]
+        private static extern void requestUserItemList(string username);
 
-    [DllImport("__Internal")]
-    private static extern void initializeIncentivizedAds();
+        [DllImport("__Internal")]
+        private static extern void initializeIncentivizedAds();
 
-    [DllImport("__Internal")]
-    private static extern void showIncentivizedAd();
+        [DllImport("__Internal")]
+        private static extern void showIncentivizedAd();
 
-    [DllImport("__Internal")]
-    private static extern void submitStats(string statisticName, int value);
-    #else
+        [DllImport("__Internal")]
+        private static extern void submitStats(string statisticName, int value);
+#else
         private static void initKongregateAPI(string gameObjectName)
         {
             _instance._status = ApiStatus.Unavailable;
@@ -552,9 +563,8 @@ namespace Kongregate.Web
         private static void initializeIncentivizedAds() { }
         private static void showIncentivizedAd() { }
         private static void submitStats(string statisticName, int value) { }
-    #endif
+#endif
 
-    #endregion
+        #endregion
     }
-
 }
