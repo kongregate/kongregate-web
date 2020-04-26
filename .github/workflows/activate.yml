@@ -8,12 +8,12 @@ jobs:
     strategy:
       matrix:
         unityVersion:
-          - 2019.4.11f1
+          - 2018.4.11f1
           - 2019.3.9f1
 
     steps:
     # Request manual activation file
-    - name: Request manual activation file
+    - name: Request manual activation file for Unity ${{ matrix.unityVersion }}
       id: getManualLicenseFile
       uses: webbertakken/unity-request-manual-activation-file@v1.1
       with:
