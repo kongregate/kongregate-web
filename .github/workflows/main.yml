@@ -18,7 +18,7 @@ jobs:
         unityVersion:
           - 2019.3.9f1
         unityLicense:
-          - ${{ secrets.UNITY_LICENSE_2019_3 }}
+          - UNITY_LICENSE_2019_3
 
     steps:
       - name: Checkout repository
@@ -37,7 +37,7 @@ jobs:
           unityVersion: ${{ matrix.unityVersion }}
           projectPath: ${{ matrix.projectPath }}
         env:
-          UNITY_LICENSE: ${{ matrix.unityLicense }}
+          UNITY_LICENSE: ${{ secrets[matrix.unityLicense] }}
 
       - name: Build project
         uses: webbertakken/unity-builder@v0.10
@@ -46,4 +46,4 @@ jobs:
           projectPath: ${{ matrix.projectPath }}
           targetPlatform: WebGL
         env:
-          UNITY_LICENSE: ${{ matrix.unityLicense }}
+          UNITY_LICENSE: ${{ secrets[matrix.unityLicense] }}
