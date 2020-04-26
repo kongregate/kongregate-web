@@ -4,8 +4,6 @@ on:
   pull_request: {}
   push: { branches: [master] }
 
-env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
   build:
@@ -19,6 +17,8 @@ jobs:
           - test-project-2019.3
         unityVersion:
           - 2019.3.9f1
+        unityLicense:
+          - ${{ secrets.UNITY_LICENSE_2019_3 }}
 
     steps:
       - name: Checkout repository
@@ -36,6 +36,8 @@ jobs:
         with:
           unityVersion: ${{ matrix.unityVersion }}
           projectPath: ${{ matrix.projectPath }}
+        env:
+          UNITY_LICENSE: ${{ matrix.unityLicense }}
 
       - name: Build project
         uses: webbertakken/unity-builder@v0.10
@@ -43,3 +45,5 @@ jobs:
           unityVersion: ${{ matrix.unityVersion }}
           projectPath: ${{ matrix.projectPath }}
           targetPlatform: WebGL
+        env:
+          UNITY_LICENSE: ${{ matrix.unityLicense }}
