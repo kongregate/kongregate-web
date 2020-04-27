@@ -20,7 +20,7 @@ jobs:
             projectPath: test-project
             licenseSecret: UNITY_LICENSE_2019_2
           - unityVersion: 2018.4.11f1
-            projectPath: test-project-2018-4
+            projectPath: test-project-2018.4
             licenseSecret: UNITY_LICENSE_2018_4
 
     steps:
