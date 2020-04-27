@@ -32,7 +32,7 @@ jobs:
       - uses: actions/cache@v1.1.0
         with:
           path: ${{ matrix.projectPath }}/Library
-          key: Library-${{ matrix.projectPath }}-${{ env.GITHUB_SHA }}
+          key: Library-${{ matrix.projectPath }}-${{ github.sha }}
 
       - name: Run tests
         uses: webbertakken/unity-test-runner@v1.3
