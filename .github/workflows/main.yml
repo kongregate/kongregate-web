@@ -14,7 +14,7 @@ jobs:
       matrix:
         unityVersion:
           - 2019.3.11f1
-          - 2018.4.11f1
+          - 2018.4.22f1
         include:
           - unityVersion: 2018.4.22f1
             projectPath: test-project-2018.4
