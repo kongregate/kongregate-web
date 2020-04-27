@@ -345,7 +345,7 @@ namespace Kongregate.Web
             // Only allow one instance of the API bridge.
             if (_instance != null)
             {
-                Debug.LogWarning("Removing duplicate Kongregate API GameObject, only one may be active at a time");
+                UnityEngine.Debug.LogWarning("Removing duplicate Kongregate API GameObject, only one may be active at a time");
                 Destroy(gameObject);
                 return;
             }
