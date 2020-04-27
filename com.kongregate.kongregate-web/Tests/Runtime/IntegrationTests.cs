@@ -34,7 +34,7 @@ public class IntegrationTests
 
     private GameObject _kongWebInstance = null;
 
-    [SetUp]
+    [OneTimeSetUp]
     public void Setup()
     {
         // Create a fresh instance of KongregateWeb object.
@@ -44,7 +44,7 @@ public class IntegrationTests
         _kongWebInstance.SendMessage("OnInitSucceeded");
     }
 
-    [TearDown]
+    [OneTimeTearDown]
     public void TearDown()
     {
         GameObject.Destroy(_kongWebInstance);
