@@ -1,49 +1,46 @@
-name: Build and Test
+name: Actions 😎
 
 on:
   pull_request: {}
   push: { branches: [master] }
 
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_2019_2 }}
 
 jobs:
-  build:
-    name: Test on Unity ${{ matrix.unityVersion }}
+  readmeWorkflow:
+    name: Readme Workflow ✨
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        projectPath:
-          - test-project-2019.3
-        unityVersion:
-          - 2019.2.11f1
-        unityLicense:
-          - UNITY_LICENSE_2019_2
-
     steps:
+      # Checkout
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           lfs: true
 
+      # Cache
       - uses: actions/cache@v1.1.0
         with:
-          path: ${{ matrix.projectPath }}/Library
-          key: Library-${{ matrix.projectPath }}
+          path: test-project/Library
+          key: Library-test-project-WebGL
 
+      # Test
       - name: Run tests
         uses: webbertakken/unity-test-runner@v1.3
         with:
-          projectPath: ${{ matrix.projectPath }}
-          unityVersion: ${{ matrix.unityVersion }}
-        env:
-          UNITY_LICENSE: ${{ secrets[matrix.unityLicense] }}
+          projectPath: test-project
+          unityVersion: 2019.2.11f1
 
+      # Build
       - name: Build project
         uses: webbertakken/unity-builder@v0.10
         with:
-          projectPath: ${{ matrix.projectPath }}
-          unityVersion: ${{ matrix.unityVersion }}
+          projectPath: test-project
+          unityVersion: 2019.2.11f1
           targetPlatform: WebGL
-        env:
-          UNITY_LICENSE: ${{ secrets[matrix.unityLicense] }}
+
+      # Output
+      - uses: actions/upload-artifact@v1
+        with:
+          name: Build
+          path: build
