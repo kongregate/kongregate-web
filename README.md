@@ -1,5 +1,7 @@
 # Kongregate Web API for Unity
 
+![Build and Test](https://github.com/kongregate/kongregate-web/workflows/Build%20and%20Test/badge.svg) [![openupm](https://img.shields.io/npm/v/com.kongregate.kongregate-web?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.kongregate.kongregate-web/) ![Unity 2019.3](https://img.shields.io/badge/Unity-2019.3-blue) ![Unity 2018.4](https://img.shields.io/badge/Unity-2018.4-blue)
+
 This package provides C# bindings to the [Kongregate Web API](https://docs.kongregate.com/v1.0/reference) to be used in developing Unity games that will be published on the Kongregate website.
 
 ```c#
