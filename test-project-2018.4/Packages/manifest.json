@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.kongregate.kongregate-web": "file:D:/GitHub/kongregate-web/com.kongregate.kongregate-web",
+    "com.kongregate.kongregate-web": "file:../../com.kongregate.kongregate-web",
     "com.unity.ads": "2.0.8",
     "com.unity.analytics": "3.2.2",
     "com.unity.collab-proxy": "1.2.15",
