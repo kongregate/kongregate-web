@@ -13,10 +13,14 @@ jobs:
       matrix:
         unityVersion:
           - 2019.2.11f1
+          - 2018.4.11f1
         include:
           - unityVersion: 2019.2.11f1
             projectPath: test-project
             licenseSecret: UNITY_LICENSE_2019_2
+          - unityVersion: 2018.4.11f1
+            projectPath: test-project-2018.4
+            licenseSecret: UNITY_LICENSE_2018_4
 
     steps:
       # Checkout
