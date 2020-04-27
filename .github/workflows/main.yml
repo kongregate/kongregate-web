@@ -4,8 +4,11 @@ on:
   pull_request: {}
   push: { branches: [master] }
 
+env:
+  UNITY_LICENSE: ${{ secrets[matrix.licenseSecret] }}
+
 jobs:
-  readmeWorkflow:
+  buildAndTest:
     name: Test against ${{ matrix.unityVersion }}
     runs-on: ubuntu-latest
 
@@ -39,8 +42,6 @@ jobs:
         with:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
-        env:
-          UNITY_LICENSE: ${{ secrets[matrix.licenseSecret] }}
 
       - name: Build project
         uses: webbertakken/unity-builder@v0.10
@@ -48,5 +49,3 @@ jobs:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: WebGL
-        env:
-          UNITY_LICENSE: ${{ secrets[matrix.licenseSecret] }}
