@@ -11,9 +11,12 @@ jobs:
 
     strategy:
       matrix:
-        - unityVersion: 2019.2.11f1
-          projectPath: test-project
-          licenseSecret: UNITY_LICENSE_2019_2
+        unityVersion:
+          - 2019.2.11f1
+        include:
+          - unityVersion: 2019.2.11f1
+            projectPath: test-project
+            licenseSecret: UNITY_LICENSE_2019_2
 
     steps:
       # Checkout
