@@ -2,8 +2,8 @@
     "name": "com.kongregate.kongregate-web",
     "displayName": "Kongregate Web",
     "version": "0.2.0",
-    "unity": "2018.3",
-    "description": "Bindings to the Kongregate Web JavaScript API.",
+    "unity": "2018.4",
+    "description": "Bindings to the Kongregate website JavaScript API.",
     "keywords": [
         "kongregate",
         "javascript",
