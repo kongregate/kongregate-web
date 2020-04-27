@@ -1,4 +1,4 @@
-name: Actions 😎
+name: Build and Test
 
 on:
   pull_request: {}
@@ -6,7 +6,7 @@ on:
 
 jobs:
   readmeWorkflow:
-    name: Readme Workflow ✨
+    name: Test against ${{ matrix.unityVersion }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -24,19 +24,16 @@ jobs:
             licenseSecret: UNITY_LICENSE_2019_3
 
     steps:
-      # Checkout
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           lfs: true
 
-      # Cache
       - uses: actions/cache@v1.1.0
         with:
           path: ${{ matrix.projectPath }}/Library
-          key: Library-${{ matrix.projectPath }}
+          key: Library-${{ matrix.projectPath }}-${{ hashFiles(format('{0}/Library/**', matrix.projectPath)) }}
 
-      # Test
       - name: Run tests
         uses: webbertakken/unity-test-runner@v1.3
         with:
@@ -45,7 +42,6 @@ jobs:
         env:
           UNITY_LICENSE: ${{ secrets[matrix.licenseSecret] }}
 
-      # Build
       - name: Build project
         uses: webbertakken/unity-builder@v0.10
         with:
@@ -54,9 +50,3 @@ jobs:
           targetPlatform: WebGL
         env:
           UNITY_LICENSE: ${{ secrets[matrix.licenseSecret] }}
-
-      # Output
-      - uses: actions/upload-artifact@v1
-        with:
-          name: Build
-          path: build
