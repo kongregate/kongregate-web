@@ -1,3 +1,7 @@
+# Helper workflow for generating the license activation files. Left disabled most of
+# the time so that it doesn't clutter the build output, but can be re-enabled
+# manually when we change Unity versions.
+
 name: Acquire activation file
 on: [push]
 jobs:
