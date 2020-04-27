@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         unityVersion:
-          - 2019.3.11f1
+          - 2018.4.22f1
 
     steps:
       # Request manual activation file
