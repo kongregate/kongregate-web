@@ -9,6 +9,12 @@ jobs:
     name: Readme Workflow ✨
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        - unityVersion: 2019.2.11f1
+          projectPath: test-project
+          licenseSecret: UNITY_LICENSE_2019_2
+
     steps:
       # Checkout
       - name: Checkout repository
@@ -19,27 +25,27 @@ jobs:
       # Cache
       - uses: actions/cache@v1.1.0
         with:
-          path: test-project/Library
-          key: Library-test-project-WebGL
+          path: ${{ matrix.projectPath }}/Library
+          key: Library-${{ matrix.projectPath }}
 
       # Test
       - name: Run tests
         uses: webbertakken/unity-test-runner@v1.3
         with:
-          projectPath: test-project
-          unityVersion: 2019.2.11f1
+          projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2019_2 }}
+          UNITY_LICENSE: ${{ secrets[matrix.licenseSecret] }}
 
       # Build
       - name: Build project
         uses: webbertakken/unity-builder@v0.10
         with:
-          projectPath: test-project
-          unityVersion: 2019.2.11f1
+          projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: WebGL
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2019_2 }}
+          UNITY_LICENSE: ${{ secrets[matrix.licenseSecret] }}
 
       # Output
       - uses: actions/upload-artifact@v1
