@@ -6,8 +6,22 @@ on:
 
 jobs:
   buildAndTest:
-    name: Build and test (2019.3.11f1)
+    name: Test against ${{ matrix.unityVersion }}
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        unityVersion:
+          - 2019.3.11f1
+          - 2018.4.22f1
+        include:
+          - unityVersion: 2018.4.22f1
+            projectPath: test-project-2018.4
+            licenseSecret: UNITY_LICENSE_2018_4
+          - unityVersion: 2019.3.11f1
+            projectPath: test-project-2019.3
+            licenseSecret: UNITY_LICENSE_2019_3
 
     steps:
       - name: Checkout repository
@@ -17,25 +31,25 @@ jobs:
 
       - uses: actions/cache@v1.1.0
         with:
-          path: test-project-2019.3/Library
-          key: Library-test-project-2019.3-${{ github.sha }}
+          path: ${{ matrix.projectPath }}/Library
+          key: Library-${{ matrix.projectPath }}-${{ github.sha }}
           restore-keys: |
-            Library-test-project-2019.3-
+            Library-${{ matrix.projectPath }}-
             Library-
 
       - name: Run tests
         uses: webbertakken/unity-test-runner@v1.3
         with:
-          projectPath: test-project-2019.3
-          unityVersion: 2019.3.11f1
+          projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2019_3 }}
+          UNITY_LICENSE: ${{ secrets[matrix.licenseSecret] }}
 
       - name: Build project
         uses: webbertakken/unity-builder@v0.10
         with:
-          projectPath: test-project-2019.3
-          unityVersion: 2019.3.11f1
+          projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: WebGL
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2019_3 }}
+          UNITY_LICENSE: ${{ secrets[matrix.licenseSecret] }}
