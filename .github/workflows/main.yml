@@ -4,13 +4,11 @@ on:
   pull_request: {}
   push: { branches: [master] }
 
-env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2019_2 }}
-
 jobs:
   readmeWorkflow:
     name: Readme Workflow ✨
     runs-on: ubuntu-latest
+
     steps:
       # Checkout
       - name: Checkout repository
@@ -30,6 +28,8 @@ jobs:
         with:
           projectPath: test-project
           unityVersion: 2019.2.11f1
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2019_2 }}
 
       # Build
       - name: Build project
@@ -38,6 +38,8 @@ jobs:
           projectPath: test-project
           unityVersion: 2019.2.11f1
           targetPlatform: WebGL
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2019_2 }}
 
       # Output
       - uses: actions/upload-artifact@v1
