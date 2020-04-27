@@ -29,14 +29,6 @@ jobs:
         with:
           lfs: true
 
-      - uses: actions/cache@v1.1.0
-        with:
-          path: ${{ matrix.projectPath }}/Library
-          key: Library-${{ matrix.projectPath }}-${{ github.sha }}
-          restore-keys: |
-            Library-${{ matrix.projectPath }}-
-            Library-
-
       - name: Run tests
         uses: webbertakken/unity-test-runner@v1.3
         with:
