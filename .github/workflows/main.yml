@@ -61,8 +61,12 @@ jobs:
         with:
           args: docs/docfx.json
 
-      - name: Publish to GitHub Pages
-        uses: maxheld83/ghpages@v0.3.0
+      - name: Deploy
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v1
+        with:
+          target_branch: gh-pages
+          build_dir: docs/_sites
+          keep_history: true
         env:
-          BUILD_DIR: docs/_site
-          GH_PAT: ${{ secrets.GH_PAT }}
+          GITHUB_PAT: ${{ secrets.GH_PAT }}
