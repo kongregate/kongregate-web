@@ -4,9 +4,9 @@
 
 This package provides C# bindings to the [Kongregate Web API](https://docs.kongregate.com/v1.0/reference) to be used in developing Unity games that will be published on the Kongregate website.
 
-> <span style="font-size: 200%;">
-> >>> <a href="https://kongregate.github.io/kongregate-web/api/">Usage and API documentation</a> <<<
-> </span>
+<span style="font-size: 200%;">
+>>> <a href="https://kongregate.github.io/kongregate-web/api/">Usage and API documentation</a> <<<
+</span>
 
 ```csharp
 KongregateWeb.BecameReady += () =>
