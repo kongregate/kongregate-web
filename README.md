@@ -1,10 +1,14 @@
 # Kongregate Web API for Unity
 
-![Build and Test](https://github.com/kongregate/kongregate-web/workflows/Build%20and%20Test/badge.svg) [![openupm](https://img.shields.io/npm/v/com.kongregate.kongregate-web?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.kongregate.kongregate-web/) ![Unity 2019.3](https://img.shields.io/badge/Unity-2019.3-blue) ![Unity 2018.4](https://img.shields.io/badge/Unity-2018.4-blue)
+![Build and Test](https://github.com/kongregate/kongregate-web/workflows/Build%20and%20Test/badge.svg) [![openupm](https://img.shields.io/npm/v/com.kongregate.kongregate-web?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.kongregate.kongregate-web/) ![Unity 2019.3](https://img.shields.io/badge/Unity-2019.3-blue) ![Unity 2018.4](https://img.shields.io/badge/Unity-2018.4-blue) [![Latest docs](https://img.shields.io/badge/docs-latest-green)](https://kongregate.github.io/kongregate-web/api/)
 
 This package provides C# bindings to the [Kongregate Web API](https://docs.kongregate.com/v1.0/reference) to be used in developing Unity games that will be published on the Kongregate website.
 
-```c#
+<span style="font-size: 200%;">
+>>> <a href="https://kongregate.github.io/kongregate-web/api/">Usage and API documentation</a> <<<
+</span>
+
+```csharp
 KongregateWeb.BecameReady += () =>
 {
     if (KongregateWeb.IsGuest)
@@ -23,59 +27,14 @@ KongregateWeb.LoggedIn += () =>
 };
 ```
 
-## Setup
+## Setup and Usage
 
-To include kongregate-web as a Unity package, you'll need to be on Unity 2018.3 or later. You have a few options for how you add the package to your project, though adding via OpenUPM is the recommended method.
-
-### Via OpenUPM
-
-kongregate-web is [hosted on OpenUPM](https://openupm.com/packages/com.kongregate.kongregate-web/). Follow the [OpenUPM getting started guide](https://openupm.com/docs/getting-started.html) if you're not already using it, then run the following command from within your Unity project:
+To include kongregate-web as a Unity package, you'll need to be on Unity 2018.3 or later. kongregate-web is [hosted on OpenUPM](https://openupm.com/packages/com.kongregate.kongregate-web/). Follow the [OpenUPM getting started guide](https://openupm.com/docs/getting-started.html) if you're not already using it, then run the following command from within your Unity project:
 
 ```text
 openupm add com.kongregate.kongregate-web
 ```
 
-### Via Git
+> Alternate setup instructions are also available [on the docs site](https://kongregate.github.io/kongregate-web/#setup).
 
-If you can't use OpenUPM for whatever reason, you can also add kongregate-web as a Git dependency. This requires Unity 2020.1 or later. Open `Packages/manifest.json` in your project and add "com.kongregate.kongregate-web" to the "dependencies" object:
-
-```json
-{
-  "dependencies": {
-    "com.kongregate.kongregate-web": "https://github.com/kongregate/kongregate-web.git?path=/com.kongregate.kongregate-web#v0.1.0"
-  }
-}
-```
-
-> NOTE: You'll need to have Git installed on your development machine for Unity to be able to download the dependency. See https://git-scm.com/ for more information.
-
-### Direct Embed
-
-If you're using an older version of Unity, you can still use kongregate-web by copying the contents of the `com.kongregate.kongregate-web` into your project's `Plugins` folder. The project is not tested against versions over Unity older than 2018.4, though.
-
-## Usage
-
-To use kongregate-web, you'll first need to include the Kongregate JavaScript API in your build's generated `index.html` file. To do so, follow the Unity instructions for [setting up a custom WebGL template](https://docs.unity3d.com/Manual/webgl-templates.html), then add a link to `kongregate_api.js` as described in the [Kongregate JavaScript guide](https://docs.kongregate.com/docs/javascript-api#section-loading-the-api).
-
-The API is accessible through public, static methods on the `KongregateWeb` class. You never need to access the `KongregateWeb` instance directly.
-
-The API needs to be loaded before it can be accessed. This will happen automatically on `Awake()` when the `KongregateWeb` object is created, however you'll need to wait for `KongregateWeb` to become ready before accessing any of the API functions. There are two ways of doing this:
-
-* `IsReady` can be used to check if the API is ready.
-* The `BecameReady` event is emitted once the API becomes ready.
-
-Any attempts to access the API (other than `IsReady`) before it becomes ready will throw an exception. It is always okay to register callbacks on public events, though.
-
-> NOTE: `KongregateWeb` will automatically create its own instance the first time it is accessed, which may mean that the API won't become ready until a later point. To ensure that the API becomes ready as early as possible, you can explicitly add an instance of `KongregateWeb` to your scene file. This will help to reduce the amount of time that your game will have to wait before accessing the Kongregate API.
-
-The `KongregateWeb` class itself provides usage documentation for each of the functions and events. Additionally, the API mirrors the JavaScript API, so you can check the Kongregate docs for more details: https://docs.kongregate.com/v1.0/reference
-
-## Cross-Platform Support
-
-The Kongregate API is only available when building for WebGL, and will only work correctly for a game that has been uploaded to the Kongregate website. When deploying your game to another website, or when testing builds locally, you can use `KongregateWeb.Status` to check the availability of the Kongregate JavaScript API. If you have not yet initialized the web API (by creating the `KongregateWeb` instance) it will return `ApiStatus.Uninitialized`. Once you have initialized the API, it will return `ApiStatus.IsReady` if the JavaScript API is present, or `ApiStatus.Unavailable` if initialization failed. `KongregateWeb.Ready` will also return `false` if the API is unavailable.
-
-## Additional Resources
-
-* [Kongregate Web API Guide](https://docs.kongregate.com/docs/javascript-api)
-* [Kongregate Web API Reference](https://docs.kongregate.com/v1.0/reference)
-* [Unity WebGL Template Reference](https://docs.unity3d.com/Manual/webgl-templates.html)
+Once you have added the package to your project you'll also need to [setup a custom WebGL template](https://kongregate.github.io/kongregate-web/#setup-custom-webgl-template) to make the Kongregate JavaScript API available to your game.
