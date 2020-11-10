@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Usage </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Usage ">
+    <meta name="generator" content="docfx 2.45.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="usage">Usage</h1>
+
+<p>The API is accessible through public, static methods on the <a href="./Kongregate.Web.KongregateWeb.html"><code>KongregateWeb</code></a> class. You never need to access the <a href="./Kongregate.Web.KongregateWeb.html"><code>KongregateWeb</code></a> instance directly.</p>
+<p>The API needs to be loaded before it can be accessed. This will happen automatically on <code>Awake()</code> when the <a href="./Kongregate.Web.KongregateWeb.html"><code>KongregateWeb</code></a> object is created, however you'll need to wait for <a href="./Kongregate.Web.KongregateWeb.html"><code>KongregateWeb</code></a> to become ready before accessing any of the API functions. There are two ways of doing this:</p>
+<ul>
+<li><a href="./Kongregate.Web.KongregateWeb.html#Kongregate_Web_KongregateWeb_IsReady"><code>IsReady</code></a> can be used to check if the API is ready.</li>
+<li>The <a href="./Kongregate.Web.KongregateWeb.html#Kongregate_Web_KongregateWeb_IsReady"><code>BecameReady</code></a> event is emitted once the API becomes ready.</li>
+</ul>
+<p>Any attempts to access the API (other than <a href="./Kongregate.Web.KongregateWeb.html#Kongregate_Web_KongregateWeb_IsReady"><code>IsReady</code></a>) before it becomes ready will throw an exception. It is always okay to register callbacks on public events, though.</p>
+<blockquote>
+<p>NOTE: <a href="./Kongregate.Web.KongregateWeb.html"><code>KongregateWeb</code></a> will automatically create its own instance the first time it is accessed, which may mean that the API won't become ready until a later point. To ensure that the API becomes ready as early as possible, you can explicitly add an instance of <a href="./Kongregate.Web.KongregateWeb.html"><code>KongregateWeb</code></a> to your scene file. This will help to reduce the amount of time that your game will have to wait before accessing the Kongregate API.</p>
+</blockquote>
+<p>The <a href="./Kongregate.Web.KongregateWeb.html"><code>KongregateWeb</code></a> class itself provides usage documentation for each of the functions and events. Additionally, the API mirrors the JavaScript API, so you can check the Kongregate docs for more details: <a href="https://docs.kongregate.com/v1.0/reference">https://docs.kongregate.com/v1.0/reference</a></p>
+<h2 id="cross-platform-support">Cross-Platform Support</h2>
+<p>The Kongregate API is only available when building for WebGL, and will only work correctly for a game that has been uploaded to the Kongregate website. When deploying your game to another website, or when testing builds locally, you can use <a href="./Kongregate.Web.KongregateWeb.html#Kongregate_Web_KongregateWeb_Status"><code>KongregateWeb.Status</code></a> to check the availability of the Kongregate JavaScript API. If you have not yet initialized the web API (by creating the <a href="./Kongregate.Web.KongregateWeb.html"><code>KongregateWeb</code></a> instance) it will return <a href="./Kongregate.Web.ApiStatus.html#fields"><code>ApiStatus.Uninitialized</code></a>. Once you have initialized the API, it will return <a href="./Kongregate.Web.ApiStatus.html#fields"><code>ApiStatus.IsReady</code></a> if the JavaScript API is present, or <a href="./Kongregate.Web.ApiStatus.html#fields"><code>ApiStatus.Unavailable</code></a> if initialization failed. <a href="./Kongregate.Web.KongregateWeb.html#Kongregate_Web_KongregateWeb_IsReady"><code>KongregateWeb.IsReady</code></a> will also return <code>false</code> if the API is unavailable.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/kongregate/kongregate-web/blob/master/docs/api/index.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
