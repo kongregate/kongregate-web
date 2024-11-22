@@ -17,7 +17,7 @@ var LibraryKongregate = {
 	},
 
 	$parseJSON: function (stringPointer) {
-		var stringValue = Pointer_stringify(stringPointer);
+		var stringValue = UTF8ToString(stringPointer);
 		if (stringValue.trim()) {
 			return JSON.parse(stringValue);
 		}
@@ -25,7 +25,7 @@ var LibraryKongregate = {
 
 	initKongregateAPI: function (gameObjectName) {
 		// Save the name of the Unity GameObject that we will send messages to.
-		instance.gameObjectName = Pointer_stringify(gameObjectName);
+		instance.gameObjectName = UTF8ToString(gameObjectName);
 
 		if (typeof kongregateAPI === 'undefined' || kongregateAPI === null) {
 			instance.sendMessage('OnInitFailed');
@@ -86,7 +86,7 @@ var LibraryKongregate = {
 	},
 
 	privateMessage: function (message) {
-		instance.kongregate.services.privateMessage(Pointer_stringify(message));
+		instance.kongregate.services.privateMessage(UTF8ToString(message));
 	},
 
 	resizeGame: function (width, height) {
@@ -121,7 +121,7 @@ var LibraryKongregate = {
 
 	requestUserItemList: function (username) {
 		// TODO: Do we need to explicitly handle if `username` is null?
-		username = Pointer_stringify(username);
+		username = UTF8ToString(username);
 		instance.kongregate.mtx.requestUserItemList(username, function (result) {
 			instance.sendMessage('OnUserItems', JSON.stringify(result));
 		});
@@ -136,7 +136,7 @@ var LibraryKongregate = {
 	},
 
 	submitStats: function (statistic_name, value) {
-		instance.kongregate.stats.submit(Pointer_stringify(statistic_name), value);
+		instance.kongregate.stats.submit(UTF8ToString(statistic_name), value);
 	},
 };
 
